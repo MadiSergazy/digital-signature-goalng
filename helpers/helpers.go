@@ -19,14 +19,21 @@ func PrintTime(expireAt int64) {
 	fmt.Println("Human-Readable Time:", timeString)
 }
 
-func ReadPdf(filePath string) (string, error) {
+func ReadPdf(filePath string) (string, []byte, error) {
 	// filePath := "someFile.pdf" // Update this with the correct file path
 	dataBytes, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-		return "", err
+		return "", nil, err
 	}
 
 	// Convert the file contents to a Base64-encoded string
-	return base64.StdEncoding.EncodeToString(dataBytes), nil
+	return base64.StdEncoding.EncodeToString(dataBytes), dataBytes, nil
+}
+
+func ErrorHandlingWithRerurn(err error, msg string) {
+	if err != nil {
+		fmt.Println(msg, err)
+		return
+	}
 }
