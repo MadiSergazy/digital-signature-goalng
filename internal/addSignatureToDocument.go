@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-
 )
 
 // Define the structure for the response
@@ -40,7 +39,7 @@ type Request struct {
 // Function to perform the POST request and receive the response
 func AddSignatureToDocument(id, signature string, baseURL string) (*AddSignatureResponse, error) {
 	// Construct the URL for the specific document ID
-	url := fmt.Sprintf("%s/api%s", baseURL, id)
+	url := fmt.Sprintf("%s/api/%s", baseURL, id)
 
 	// Create the request body
 	requestBody := Request{

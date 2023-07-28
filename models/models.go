@@ -291,7 +291,7 @@ func (docRegReq *DocumentRegistrationRequest) RegisterDocument(baseURL string) (
 
 // *Registration HESH
 // Define the structure for the response
-type DocumentDataResponse struct {
+type DocumentHashesResponse struct {
 	DocumentID                       string                     `json:"documentId"`
 	SignedDataSize                   int                        `json:"signedDataSize"`
 	Digests                          map[string]string          `json:"digests"`
@@ -316,8 +316,8 @@ type UserSettingsResponse struct {
 	ModifiedAt                int64  `json:"modifiedAt"`
 }
 
-// Function to perform the POST request and receive the response
-func (docRes DocumentDataResponse) PostDocumentData(id string, document []byte, baseURL string) (*DocumentDataResponse, error) {
+// Function to perform the POST request and receive the response FixingDocumentHashes
+func (docRes DocumentHashesResponse) FixingDocumentHashes(id string, document []byte, baseURL string) (*DocumentHashesResponse, error) {
 	// Construct the URL for the specific document ID
 	url := fmt.Sprintf("%s/api/%s/data", baseURL, id)
 
@@ -345,7 +345,7 @@ func (docRes DocumentDataResponse) PostDocumentData(id string, document []byte, 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("received non-OK status code: %d", resp.StatusCode)
 	}
-	var response DocumentDataResponse
+	var response DocumentHashesResponse
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
 		return nil, err

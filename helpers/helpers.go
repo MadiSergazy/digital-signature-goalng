@@ -37,3 +37,19 @@ func ErrorHandlingWithRerurn(err error, msg string) {
 		return
 	}
 }
+
+func DecodeBase64ToPDF(base64String, outputPath string) error {
+	// Decode the Base64 string to bytes
+	decodedBytes, err := base64.StdEncoding.DecodeString(base64String)
+	if err != nil {
+		return err
+	}
+
+	// Write the decoded bytes to the output file
+	err = ioutil.WriteFile(outputPath, decodedBytes, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

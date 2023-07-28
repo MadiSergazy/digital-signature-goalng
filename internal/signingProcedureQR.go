@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"mado/models"
 	"net/http"
+
+	"mado/models"
 )
 
 // QRSigningClientCMS represents a client for QR signing with CMS.
@@ -194,10 +195,9 @@ func (qc *QRSigningClientCMS) GetSignatures(dataSentCallback func()) ([]string, 
 
 	var response *http.Response
 	for i := 0; i < qc.Retries; i++ {
-		fmt.Println("retrying request")
 
-		fmt.Println("qc.DataURL: ", qc.DataURL)
-		fmt.Println("signMethod: ", signMethod)
+		// fmt.Println("qc.DataURL: ", qc.DataURL)
+		// fmt.Println("signMethod: ", signMethod)
 		// fmt.Println("dataBytes: ", string(dataBytes))
 
 		response, err = http.Post(qc.DataURL, "application/json", bytes.NewReader(dataBytes))
@@ -221,7 +221,7 @@ func (qc *QRSigningClientCMS) GetSignatures(dataSentCallback func()) ([]string, 
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("after POST request response: ", responseJSON) //*?i am getting this: map[expireAt:1.690350980919e+12 signURL:https://sigex.kz/api/egovQr/dVoCifgX9iZGFiBB]
+	// fmt.Println("after POST request response: ", responseJSON) //*?i am getting this: map[expireAt:1.690350980919e+12 signURL:https://sigex.kz/api/egovQr/dVoCifgX9iZGFiBB]
 
 	var ErrorResp models.ErrorResponse
 	errMessage := ErrorResp.GetHumanReadableErrorMessageByResponse(responseJSON)
