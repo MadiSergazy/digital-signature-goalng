@@ -62,7 +62,8 @@ func PreparationStep() (nonce *string, signature *string) {
 		fmt.Println("First man RegisterQRSinging dataURL: ", dataURL)
 
 		eGovMobileLaunchLink := qrSigner.GetEGovMobileLaunchLink()
-		fmt.Println("For log-in eGov Mobile Launch Link:", eGovMobileLaunchLink)
+		fmt.Println("For log-in eGov Mobile Launch Link:", eGovMobileLaunchLink) //todo pull to front
+		//todo response front
 		signatures, err := qrSigner.GetSignatures(nil)
 		if err != nil {
 			fmt.Println("GetSignatures Error:", err)
