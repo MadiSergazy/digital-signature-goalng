@@ -3,11 +3,19 @@ package api
 import (
 	"context"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"go.uber.org/zap"
 
 	"mado/internal/config"
+	httphandler "mado/internal/controller/http/handler"
+	"mado/internal/core"
+	"mado/internal/repository/psql"
 	"mado/pkg/database/postgres"
+	"mado/pkg/httpserver"
 )
 
 // App is a application interface.
@@ -44,12 +52,11 @@ func New(ctx context.Context, logger *zap.Logger) (App, error) {
 	// }
 
 	repositories := psql.NewRepositories(postgresInstance)
-	services := domain.NewServices(repositories, passwordHasher)
+	services := core.NewServices(repositories)
 
 	router := httphandler.NewRouter(httphandler.Deps{
-		TokenMaker: tokenMaker,
-		Logger:     logger,
-		Services:   services,
+		Logger:   logger,
+		Services: services,
 	})
 
 	return App{
@@ -64,4 +71,32 @@ func New(ctx context.Context, logger *zap.Logger) (App, error) {
 			httpserver.WithWriteTimeout(cfg.HTTP.WriteTimeout),
 		),
 	}, nil
+}
+
+// Run runs the application.
+func (a App) Run(ctx context.Context) error {
+	eChan := make(chan error)
+	interrupt := make(chan os.Signal, 1)
+
+	a.logger.Info("Http server is starting")
+
+	go func() {
+		if err := a.httpServer.Start(); err != nil {
+			eChan <- fmt.Errorf("failed to listen and serve: %w", err)
+		}
+	}()
+
+	signal.Notify(interrupt, syscall.SIGINT, syscall.SIGTERM)
+	select {
+	case err := <-eChan:
+		return fmt.Errorf("conduit started failed: %w", err)
+	case <-interrupt:
+	}
+
+	const httpShutdownTimeout = 5 * time.Second
+	if err := a.httpServer.Stop(ctx, httpShutdownTimeout); err != nil {
+		return fmt.Errorf("failed to stop http server: %w", err)
+	}
+
+	return nil
 }

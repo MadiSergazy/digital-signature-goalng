@@ -6,6 +6,7 @@ import (
 
 	"mado/internal/config"
 	"mado/internal/controller/http/middleware"
+	"mado/internal/core"
 )
 
 // Deps is a http handler dependencies.
