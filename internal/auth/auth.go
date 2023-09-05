@@ -38,13 +38,6 @@ func PreparationStep() (nonce *string, signature *string) {
 	}
 	fmt.Println(responseJSON)
 
-	// var ErrorResp models.ErrorResponse
-	// errMessage := ErrorResp.GetHumanReadableErrorMessageByResponse(responseJSON)
-	// if errMessage != "" {
-	// 	fmt.Println("err resp:", err)
-	// 	return nil, nil
-	// }
-
 	if nonce, ok := responseJSON["nonce"].(string); ok {
 		qrSigner := internal.NewQRSigningClientCMS("Тестовое подписание", false, baseUrl)
 		err = qrSigner.AddDataToSign([]string{block, block, block}, nonce, nil, true)
