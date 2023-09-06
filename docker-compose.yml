@@ -16,12 +16,9 @@ services:
       - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  
-  # api:
-  #   build:
-  #     context: ./
-  #     target: production
 
-  #   ports:
-  #     - 8080:8080
-
+  api:
+    build:
+      context: ./backend
+    ports:
+      - 8080:8080
