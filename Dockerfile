@@ -32,3 +32,8 @@ COPY --from=builder /app/.env .
 # Set the entry point command for the container
 CMD ["./main"]
 
+# docker build -t my-golang-app .
+# docker run -d --name my-golang-app-container my-golang-app
+# docker exec -it my-golang-app-container /bin/sh
+# docker rm my-golang-app-container
+
