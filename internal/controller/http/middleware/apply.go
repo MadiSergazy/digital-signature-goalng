@@ -8,6 +8,6 @@ import (
 // ApplyMiddlewares applies middlewares to the given router.
 func ApplyMiddlewares(router *gin.Engine, l *zap.Logger) {
 	router.Use(gin.Recovery())
-	router.Use(corsMiddleware())
+	// router.Use(corsMiddleware())
 	router.Use(logMiddleware(l))
 }

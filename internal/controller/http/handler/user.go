@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,7 @@ func newUserHandler(deps userDeps) {
 
 	usersGroup := deps.router.Group("/users")
 	{
+		usersGroup.GET("/", handler.getUser)
 		usersGroup.POST("/", handler.createUser)     // api/users/
 		usersGroup.POST("/login", handler.loginUser) // api/users/login
 	}
@@ -41,6 +43,14 @@ func newUserHandler(deps userDeps) {
 }
 
 func (h userHandler) createUser(c *gin.Context) {
+	fmt.Println("createUser")
+	c.IndentedJSON(http.StatusOK, "User created")
+
+}
+
+func (h userHandler) getUser(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, http.StatusText(http.StatusOK))
+	fmt.Println("GetUser")
 }
 
 // TODO implement this properly

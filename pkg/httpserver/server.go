@@ -58,6 +58,7 @@ func New(httpHandler http.Handler, opts ...Option) Server {
 
 // Start starts the http server.
 func (s Server) Start() error {
+	fmt.Println("Starting http server successfully, ", s.httpServer.Addr)
 	if err := s.httpServer.ListenAndServe(); err != nil {
 		return fmt.Errorf("failed to start http server: %w", err)
 	}

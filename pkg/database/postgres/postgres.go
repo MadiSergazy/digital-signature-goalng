@@ -4,17 +4,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
+	"os"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const (
 	defaultMaxPoolSize  int           = 1
 	defaultConnAttempts int           = 10
-	defaultConnTimeout  time.Duration = time.Second
+	defaultConnTimeout  time.Duration = 5 * time.Second
 )
 
 // ErrUnableToConnect is returned when unable to connect to the postgres.
@@ -46,29 +46,63 @@ func New(ctx context.Context, connectionConfig ConnectionConfig, opts ...Option)
 	instance.Builder = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	dsn := connectionConfig.getDSN()
+	fmt.Println("DSN: ", dsn)
+	ctx, cancel := context.WithTimeout(context.Background(), defaultConnTimeout)
+	defer cancel()
 
-	poolCfg, err := pgxpool.ParseConfig(dsn)
+	dbpool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
-		return nil, fmt.Errorf("unable to parse config: %w", err)
+		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
+		os.Exit(1)
 	}
 
-	poolCfg.MaxConns = int32(instance.maxPoolSize)
+	// Ping the database to check the connection
+	if err := dbpool.Ping(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to ping database: %v\n", err)
+		os.Exit(1)
+	}
 
-	for instance.connAttempts > 0 {
-		instance.Pool, err = pgxpool.ConnectConfig(ctx, poolCfg)
-		if err == nil {
-			break
+	instance.Pool = dbpool
+	defer dbpool.Close()
+
+	/*var err error
+	if err := DoWithTrials(func() error {
+		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+		defer cancel()
+		instance.Pool, err = pgxpool.ParseConfig() // Connect(ctx, dsn)
+		if err != nil {
+			return err
 		}
 
-		log.Printf("Postgres is trying to connect, attempts left: %d", instance.connAttempts)
-		time.Sleep(instance.connTimeout)
+		return nil
+	}, defaultConnAttempts, 5*time.Second); err != nil {
+		log.Fatal("error do with postgresql")
+	}*/
 
-		instance.connAttempts--
-	}
+	/*
+		poolCfg, err := pgxpool.ParseConfig(dsn)
+		if err != nil {
+			return nil, fmt.Errorf("unable to parse config: %w", err)
+		}
+		fmt.Println("poolCfg: ", poolCfg)
 
-	if err != nil {
-		return nil, ErrUnableToConnect
-	}
+		poolCfg.MaxConns = int32(instance.maxPoolSize)
 
+		for instance.connAttempts > 0 {
+			instance.Pool, err = pgxpool.ConnectConfig(ctx, poolCfg)
+			if err == nil {
+				break
+			}
+
+			log.Printf("Postgres is trying to connect, attempts left: %d", instance.connAttempts)
+			time.Sleep(instance.connTimeout)
+
+			instance.connAttempts--
+		}*/
+
+	// if err != nil {
+	// 	return nil, ErrUnableToConnect
+	// }
+	fmt.Println("POOL postgres: ", instance.Pool)
 	return instance, nil
 }

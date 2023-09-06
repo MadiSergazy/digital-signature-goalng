@@ -34,8 +34,8 @@ type (
 
 	// HTTP is the configuration for the HTTP server.
 	HTTP struct {
-		Host           string        `envconfig:"HTTP_HOST"` //               required:"true"`
-		Port           string        `envconfig:"HTTP_PORT"` //               required:"true"`
+		Host           string        `envconfig:"HTTP_HOST" default:"localhost"` //               required:"true"`
+		Port           string        `envconfig:"HTTP_PORT" default:"8080"`      //               required:"true"`
 		MaxHeaderBytes int           `envconfig:"HTTP_MAX_HEADER_BYTES"                 default:"1"`
 		ReadTimeout    time.Duration `envconfig:"HTTP_READ_TIMEOUT"                     default:"10s"`
 		WriteTimeout   time.Duration `envconfig:"HTTP_WRITE_TIMEOUT"                    default:"10s"`
@@ -68,7 +68,8 @@ type (
 
 	// CORS is the configuration for the CORS.
 	CORS struct {
-		AllowOrigins []string `envconfig:"CORS_ALLOW_ORIGINS" default="http://localhost:8000"` // required:"true"`
+		AllowOrigins []string `envconfig:"CORS_ALLOW_ORIGINS" default:"http://localhost:8000"`
+		// required:"true"`
 	}
 )
 
