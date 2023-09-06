@@ -1,4 +1,4 @@
-.PHONY: up-docker build-docker
+.PHONY: up-docker build-docker build-up
 
 up-docker:
 	docker compose up
@@ -6,3 +6,6 @@ up-docker:
 
 build-docker:
 	docker compose build
+
+build-up:
+	docker compose up --build
