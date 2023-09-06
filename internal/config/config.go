@@ -23,7 +23,7 @@ const (
 type (
 	// Config is the configuration for the application.
 	Config struct {
-		Environment    EnvType `envconfig:"ENVIRONMENT" required:"true"`
+		Environment    EnvType `envconfig:"ENVIRONMENT" default:"dev"` // required:"true"`
 		HTTP           HTTP
 		Postgres       Postgres
 		Logger         Logger
@@ -34,8 +34,8 @@ type (
 
 	// HTTP is the configuration for the HTTP server.
 	HTTP struct {
-		Host           string        `envconfig:"HTTP_HOST"             required:"true"`
-		Port           string        `envconfig:"HTTP_PORT"             required:"true"`
+		Host           string        `envconfig:"HTTP_HOST"` //               required:"true"`
+		Port           string        `envconfig:"HTTP_PORT"` //               required:"true"`
 		MaxHeaderBytes int           `envconfig:"HTTP_MAX_HEADER_BYTES"                 default:"1"`
 		ReadTimeout    time.Duration `envconfig:"HTTP_READ_TIMEOUT"                     default:"10s"`
 		WriteTimeout   time.Duration `envconfig:"HTTP_WRITE_TIMEOUT"                    default:"10s"`
@@ -43,12 +43,12 @@ type (
 
 	// Postgres is the configuration for the Postgres database.
 	Postgres struct {
-		Host     string `envconfig:"POSTGRES_HOST"     required:"true"`
-		Port     string `envconfig:"POSTGRES_PORT"     required:"true"`
-		DBName   string `envconfig:"POSTGRES_DBNAME"   required:"true"`
-		User     string `envconfig:"POSTGRES_USER"     required:"true"`
-		Password string `envconfig:"POSTGRES_PASSWORD" required:"true" json:"-"`
-		SSLMode  string `envconfig:"POSTGRES_SSLMODE"                           default:"disable"`
+		Host     string `envconfig:"POSTGRES_HOST" default:"localhost"`           // required:"true"`
+		Port     string `envconfig:"POSTGRES_PORT" default:"5432"`                //    required:"true"`
+		DBName   string `envconfig:"POSTGRES_DBNAME" default:"petition_service"`  //     required:"true"`
+		User     string `envconfig:"POSTGRES_USER" default:"postgres"`            //  required:"true"`
+		Password string `envconfig:"POSTGRES_PASSWORD" default:"madiPostgre2023"` //   required:"true" json:"-"`
+		SSLMode  string `envconfig:"POSTGRES_SSLMODE"                               default:"disable"`
 	}
 
 	// Logger is the configuration for the logger.
@@ -68,7 +68,7 @@ type (
 
 	// CORS is the configuration for the CORS.
 	CORS struct {
-		AllowOrigins []string `envconfig:"CORS_ALLOW_ORIGINS" required:"true"`
+		AllowOrigins []string `envconfig:"CORS_ALLOW_ORIGINS" default="http://localhost:8000"` // required:"true"`
 	}
 )
 
@@ -98,6 +98,7 @@ func Get() *Config {
 		if err := envconfig.Process("", &instance); err != nil {
 			log.Fatal(err)
 		}
+		fmt.Println(instance)
 
 		switch instance.Environment {
 		case test, prod, dev:
