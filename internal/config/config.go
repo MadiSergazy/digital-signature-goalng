@@ -43,11 +43,11 @@ type (
 
 	// Postgres is the configuration for the Postgres database.
 	Postgres struct {
-		Host     string `envconfig:"POSTGRES_HOST" default:"localhost"`           // required:"true"`
-		Port     string `envconfig:"POSTGRES_PORT" default:"5432"`                //    required:"true"`
-		DBName   string `envconfig:"POSTGRES_DBNAME" default:"petition_service"`  //     required:"true"`
-		User     string `envconfig:"POSTGRES_USER" default:"postgres"`            //  required:"true"`
-		Password string `envconfig:"POSTGRES_PASSWORD" default:"madiPostgre2023"` //   required:"true" json:"-"`
+		Host     string `envconfig:"POSTGRES_HOST" default:"localhost"`          // required:"true"`
+		Port     string `envconfig:"POSTGRES_PORT" default:"5432"`               //    required:"true"`
+		DBName   string `envconfig:"POSTGRES_DBNAME" default:"petition_service"` //     required:"true"`
+		User     string `envconfig:"POSTGRES_USER" default:"postgres"`           //  required:"true"`
+		Password string `envconfig:"POSTGRES_PASSWORD" default:"LiftKZ2023"`     //   required:"true" json:"-"`
 		SSLMode  string `envconfig:"POSTGRES_SSLMODE"                               default:"disable"`
 	}
 
