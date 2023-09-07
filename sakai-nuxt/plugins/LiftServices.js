@@ -1,9 +1,9 @@
 import { API_URL, getHeader } from '@/config';
 
 const LiftService = {
-    async login(email, password) {
-        const url = `${API_URL}/users/login`;
-        const response = await useAsyncData('login', async () => await $fetch(url, { method: 'POST', body: { email: email, password: password }, headers: getHeader(), credentials: 'include' }));
+    async login() {
+        const url = `${API_URL}/api/users/login`;
+        const response = await useAsyncData('login', async () => await $fetch(url, { method: 'POST', headers: getHeader() }));
         return response;
     }
 };

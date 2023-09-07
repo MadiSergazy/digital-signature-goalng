@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"fmt"
-
 	"mado/internal"
 	"mado/internal/auth"
 	"mado/internal/auth/model"

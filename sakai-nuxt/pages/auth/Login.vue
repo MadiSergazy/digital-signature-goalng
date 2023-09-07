@@ -15,7 +15,8 @@ definePageMeta({
 });
 const nuxtApp = useNuxtApp();
 const login = async () => {
-    var response = await nuxtApp.$liftservice().login(email.value, password.value);
+    var response = await nuxtApp.$liftservice().login();
+    console.log('response:', response);
     return response;
 };
 </script>
@@ -29,12 +30,12 @@ const login = async () => {
                     <div class="text-center mb-5">
                         <!-- <img src="/demo/images/login/avatar.png" alt="Image" height="50" class="mb-3" /> -->
                         <div class="text-900 text-3xl font-medium mb-3">Добро пожаловать!</div>
-                        <span class="text-600 font-medium">Войдите что бы продолжить</span>
+                        <span class="text-600 font-medium">Войдите через егов mobile что бы продолжить</span>
                     </div>
 
                     <div>
-                        <label for="email1" class="block text-900 text-xl font-medium mb-2">ЭЦП</label>
-                        <InputText id="email1" v-model="email" type="text" placeholder="введите ЭЦП ключь" class="w-full mb-3" style="padding: 1rem" />
+                        <!-- <label for="email1" class="block text-900 text-xl font-medium mb-2">ЭЦП</label>
+                        <InputText id="email1" v-model="email" type="text" placeholder="введите ЭЦП ключь" class="w-full mb-3" style="padding: 1rem" /> -->
                         <Button label="Войти" class="w-full p-3 text-xl" @click="login"></Button>
                     </div>
                 </div>
