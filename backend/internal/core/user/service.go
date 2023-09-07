@@ -2,6 +2,11 @@ package user
 
 import (
 	"context"
+	"fmt"
+
+	"mado/internal"
+	"mado/internal/auth"
+	"mado/internal/auth/model"
 )
 
 // Repository is a user repository.
@@ -43,7 +48,24 @@ func (s Service) Create(ctx context.Context, dto *User) (*User, error) {
 
 // todo do it properly
 // Login provides user login.
-func (s Service) Login(context.Context, *User) (*User, error) {
+func (s Service) Login(ctx context.Context, qrSigner *internal.QRSigningClientCMS, nonce *string) (*User, error) {
+	// ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	// defer cancel()
+
+	signature := auth.GetNonceSignature(qrSigner)
+	// nonce
+
+	req := model.AuthRequest{
+		Nonce:     nonce,
+		Signature: signature,
+		External:  true,
+	}
+
+	response, err := model.Authentification(req)
+	if err != nil {
+		fmt.Println("Authentication error:", err)
+	}
+	fmt.Println(response)
 
 	return nil, nil
 }
