@@ -4,6 +4,7 @@ const LiftService = {
     async login() {
         const url = `${API_URL}/api/users/login`;
         const response = await useAsyncData('login', async () => await $fetch(url, { method: 'POST', headers: getHeader() }));
+        
         return response;
     }
 };
