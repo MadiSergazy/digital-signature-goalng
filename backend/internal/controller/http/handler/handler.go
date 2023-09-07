@@ -26,7 +26,6 @@ func NewRouter(deps Deps) *gin.Engine {
 	middleware.ApplyMiddlewares(router, deps.Logger)
 	// Add the Gin logger middleware to log request information
 	router.Use(gin.Logger())
-
 	api := router.Group("/api")
 	{
 
@@ -36,6 +35,9 @@ func NewRouter(deps Deps) *gin.Engine {
 			userService: deps.Services.User,
 		})
 
+		newTestURLHandler(testURLDeps{
+			router: router,
+		})
 		// newProfileHandler(profileDeps{
 		// 	router:         api,
 

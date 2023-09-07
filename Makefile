@@ -1,7 +1,7 @@
 .PHONY: up-docker build-docker build-up
 
 up-docker:
-	docker compose up
+	docker-compose up --force-recreate
 
 
 build-docker:
