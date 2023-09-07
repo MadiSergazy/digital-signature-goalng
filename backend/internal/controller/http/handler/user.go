@@ -76,22 +76,5 @@ func (h userHandler) loginUser(c *gin.Context) {
 		return
 	}
 
-	// userEntity, err := h.userService.Create(logger.FromRequestToContext(c), user.CreateDTO{
-	// 	Email:    request.User.Email,
-	// 	Username: request.User.Username,
-	// 	Password: request.User.Password,
-	// })
-	// if err != nil {
-	// 	httperr.RespondWithSlugError(c, err)
-	// 	return
-	// }
-
-	c.JSON(http.StatusOK, gin.H{
-		// "user": loginUserResponse{
-		// 	Email:    userEntity.Email,
-		// 	Username: userEntity.Username,
-		// 	IIN:      userEntity,
-		// 	BIN:      userEntity,
-		// },
-	})
+	c.JSON(http.StatusOK, gin.H{})
 }
