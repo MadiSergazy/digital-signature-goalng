@@ -13,6 +13,11 @@ const logoUrl = computed(() => {
 definePageMeta({
     layout: false
 });
+const nuxtApp = useNuxtApp();
+const login = async () => {
+    var response = await nuxtApp.$liftservice().login(email.value, password.value);
+    return response;
+};
 </script>
 
 <template>
@@ -30,7 +35,7 @@ definePageMeta({
                     <div>
                         <label for="email1" class="block text-900 text-xl font-medium mb-2">ЭЦП</label>
                         <InputText id="email1" v-model="email" type="text" placeholder="введите ЭЦП ключь" class="w-full mb-3" style="padding: 1rem" />
-                        <Button label="Войти" class="w-full p-3 text-xl"></Button>
+                        <Button label="Войти" class="w-full p-3 text-xl" @click="login"></Button>
                     </div>
                 </div>
             </div>
