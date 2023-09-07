@@ -7,12 +7,17 @@ const email = ref('');
 const password = ref('');
 const checked = ref(false);
 const logoUrl = computed(() => {
-    return `/layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+    return 'https://lift.kz/upload/CAllcorp3/a34/ajyqu8cvbfy1ktuc1nys5cxzsslndmtx/talgaatb2.png';
 });
 
 definePageMeta({
     layout: false
 });
+const nuxtApp = useNuxtApp();
+const login = async () => {
+    var response = await nuxtApp.$liftservice().login(email.value, password.value);
+    return response;
+};
 </script>
 
 <template>
@@ -30,7 +35,7 @@ definePageMeta({
                     <div>
                         <label for="email1" class="block text-900 text-xl font-medium mb-2">ЭЦП</label>
                         <InputText id="email1" v-model="email" type="text" placeholder="введите ЭЦП ключь" class="w-full mb-3" style="padding: 1rem" />
-                        <Button label="Войти" class="w-full p-3 text-xl"></Button>
+                        <Button label="Войти" class="w-full p-3 text-xl" @click="login"></Button>
                     </div>
                 </div>
             </div>
