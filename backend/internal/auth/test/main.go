@@ -1,24 +1,24 @@
 package main
 
-import (
-	"fmt"
+// import (
+// 	"fmt"
 
-	"mado/internal/auth"
-	"mado/internal/auth/model"
-)
+// 	"mado/internal/auth"
+// 	"mado/internal/auth/model"
+// )
 
-func main() {
-	nonce, signature := auth.PreparationStep()
+// func main() {
+// nonce, signature := auth.PreparationStep()
 
-	req := model.AuthRequest{
-		Nonce:     nonce,
-		Signature: signature,
-		External:  true,
-	}
+// req := model.AuthRequest{
+// 	Nonce:     nonce,
+// 	Signature: signature,
+// 	External:  true,
+// }
 
-	response, err := model.Authentification(req)
-	if err != nil {
-		fmt.Println("Authentication error:", err)
-	}
-	fmt.Println(response)
-}
+// response, err := model.Authentification(req)
+// if err != nil {
+// 	fmt.Println("Authentication error:", err)
+// }
+// fmt.Println(response)
+// }

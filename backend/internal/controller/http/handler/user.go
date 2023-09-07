@@ -7,9 +7,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"mado/internal/auth"
 	"mado/internal/controller/http/httperr"
 	"mado/internal/core/user"
 )
+
+type ECP struct {
+	Ecp string `json:"ecp"    binding:"required,ecp"`
+}
 
 // UserService is a user service interface.
 type UserService interface {
@@ -77,4 +82,15 @@ func (h userHandler) loginUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (h userHandler) authUser(c *gin.Context) {
+	var request ECP
+	if err := c.ShouldBind(&request); err != nil {
+		httperr.BadRequest(c, "invalid-request", err)
+		return
+	}
+	egovMobileLink, qrSigner := auth.PreparationStep()
+	c.JSON(http.StatusOK, gin.H{"link": egovMobileLink})
+	auth.GetNonceSignature(qrSigner)
 }

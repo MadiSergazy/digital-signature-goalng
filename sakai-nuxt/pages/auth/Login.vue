@@ -7,7 +7,7 @@ const email = ref('');
 const password = ref('');
 const checked = ref(false);
 const logoUrl = computed(() => {
-    return `/layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+    return 'https://lift.kz/upload/CAllcorp3/a34/ajyqu8cvbfy1ktuc1nys5cxzsslndmtx/talgaatb2.png';
 });
 
 definePageMeta({

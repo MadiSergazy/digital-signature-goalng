@@ -14,7 +14,7 @@ const (
 	baseUrl = "https://sigex.kz"
 )
 
-func PreparationStep() (nonce *string, signature *string) {
+func PreparationStep() (*string, *internal.QRSigningClientCMS) {
 
 	body, _ := json.Marshal(map[string]interface{}{})
 
@@ -57,17 +57,20 @@ func PreparationStep() (nonce *string, signature *string) {
 		eGovMobileLaunchLink := qrSigner.GetEGovMobileLaunchLink()
 		fmt.Println("For log-in eGov Mobile Launch Link:", eGovMobileLaunchLink) //todo pull to front
 		//todo response front
-		signatures, err := qrSigner.GetSignatures(nil)
-		if err != nil {
-			fmt.Println("GetSignatures Error:", err)
-			return nil, nil
-		}
-
-		return &nonce, &signatures[0]
-
+		return &eGovMobileLaunchLink, qrSigner
 	} else {
 		fmt.Println("err did't have nonce in resp:", err)
 		return nil, nil
 	}
 
+}
+
+func GetNonceSignature(qrSigner *internal.QRSigningClientCMS) *string {
+	signatures, err := qrSigner.GetSignatures(nil)
+	if err != nil {
+		fmt.Println("GetSignatures Error:", err)
+		return nil
+	}
+
+	return &signatures[0]
 }
