@@ -6,6 +6,7 @@ const { layoutConfig } = useLayout();
 const email = ref('');
 const password = ref('');
 const checked = ref(false);
+const loading = ref(false);
 const logoUrl = computed(() => {
     return 'https://lift.kz/upload/CAllcorp3/a34/ajyqu8cvbfy1ktuc1nys5cxzsslndmtx/talgaatb2.png';
 });
@@ -14,9 +15,13 @@ definePageMeta({
     layout: false
 });
 const nuxtApp = useNuxtApp();
+const link = ref(null);
 const login = async () => {
+    loading.value = true;
     var response = await nuxtApp.$liftservice().login();
-    console.log('response:', response);
+    loading.value = false;
+    console.log('response[data]:', response.data.value['link']);
+    link.value = response.data.value['link'];
     return response;
 };
 </script>
@@ -36,7 +41,8 @@ const login = async () => {
                     <div>
                         <!-- <label for="email1" class="block text-900 text-xl font-medium mb-2">ЭЦП</label>
                         <InputText id="email1" v-model="email" type="text" placeholder="введите ЭЦП ключь" class="w-full mb-3" style="padding: 1rem" /> -->
-                        <Button label="Войти" class="w-full p-3 text-xl" @click="login"></Button>
+                        <nuxt-link v-if="link" :to="link"><Button :loading="loading" label="Нажмите сюда что бы перейти в егов мобайл" class="w-full p-3 text-xl"></Button></nuxt-link>
+                        <Button v-if="!link" :loading="loading" label="Войти" class="w-full p-3 text-xl" @click="login"></Button>
                     </div>
                 </div>
             </div>

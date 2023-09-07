@@ -68,7 +68,7 @@ type (
 
 	// CORS is the configuration for the CORS.
 	CORS struct {
-		AllowOrigins []string `envconfig:"CORS_ALLOW_ORIGINS" default:"localhost:3000"`
+		AllowOrigins []string `envconfig:"CORS_ALLOW_ORIGINS" default:"http://localhost:3000"`
 		// required:"true"`
 	}
 )
