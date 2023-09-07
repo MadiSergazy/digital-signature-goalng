@@ -55,7 +55,7 @@ func TestGet(t *testing.T) {
 		postgresPassword: "test",
 		baseURL:          "https://sigex.kz",
 		// tokenSecretKey:   "secret",
-		corsAllowOrigins: "http://localhost:3000",
+		corsAllowOrigins: "*",
 	}
 
 	want := &config.Config{

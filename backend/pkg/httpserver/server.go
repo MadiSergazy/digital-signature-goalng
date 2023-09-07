@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultHost              string        = "localhost"
+	defaultHost              string        = "0.0.0.0"
 	defaultPort              string        = "8080"
 	defaultMaxHeaderBytes    int           = 1 << 20 // 1MB
 	defaultReadTimeout       time.Duration = 5 * time.Second
