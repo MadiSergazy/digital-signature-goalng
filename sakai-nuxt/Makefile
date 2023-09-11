@@ -3,5 +3,8 @@
 ui:
 	npm run dev
 
-dependencies:
-	npm install
+dependencies-ubuntu:
+	sudo apt install npm
+
+dependencies-mac:
+	install npm	

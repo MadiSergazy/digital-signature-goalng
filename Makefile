@@ -5,7 +5,7 @@ up-docker:
 
 
 build-docker:
-	docker compose build
+	docker-compose build
 
 build-up:
-	docker compose up --build
+	docker-compose up --build
