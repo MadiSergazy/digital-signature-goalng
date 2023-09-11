@@ -2,12 +2,15 @@ package user
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"mado/internal"
 	"mado/internal/auth"
 	"mado/internal/auth/model"
 )
+
+var parsingError = errors.New("Error parsing JSON: ")
 
 // Repository is a user repository.
 type Repository interface {
@@ -66,7 +69,12 @@ func (s Service) Login(ctx context.Context, qrSigner *internal.QRSigningClientCM
 		fmt.Println("Authentication error:", err)
 	}
 	fmt.Println(response)
-
+	s.userRepository.Create(ctx, &User{
+		Username: &response.Subject,
+		Email:    &response.Email,
+		IIN:      &response.UserID,
+		BIN:      &response.BusinessID,
+	})
 	return nil, nil
 }
 
