@@ -2,8 +2,10 @@ package model
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
+	"mado/internal"
 	"net/http"
 )
 
@@ -71,4 +73,10 @@ func Authentification(request AuthRequest) (*AuthResponse, error) {
 	}
 
 	return &responseJSON, nil
+}
+
+type LoginRequirements struct {
+	Context  context.Context              `json:"context"`
+	QrSigner *internal.QRSigningClientCMS `json:"qrsigner"`
+	Nonce    *string                      `json:"nonce"`
 }

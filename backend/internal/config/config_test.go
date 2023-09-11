@@ -46,7 +46,7 @@ func TestGet(t *testing.T) {
 
 	env := env{
 		environment:      "test",
-		httpHost:         "192.168.1.32",
+		httpHost:         "0.0.0.0",
 		httpPort:         "8080",
 		postgresHost:     "postgres",
 		postgresPort:     "5431",
@@ -61,7 +61,7 @@ func TestGet(t *testing.T) {
 	want := &config.Config{
 		Environment: "test",
 		HTTP: config.HTTP{
-			Host:           "192.168.1.32",
+			Host:           "0.0.0.0",
 			Port:           "8080",
 			MaxHeaderBytes: 1,
 			ReadTimeout:    10 * time.Second,

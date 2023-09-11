@@ -2,6 +2,7 @@
 import { useLayout } from '@/layouts/composables/layout';
 import { ref, computed } from 'vue';
 import AppConfig from '@/layouts/AppConfig.vue';
+import { useRoute } from 'vue-router';
 const { layoutConfig } = useLayout();
 const email = ref('');
 const password = ref('');
@@ -16,13 +17,17 @@ definePageMeta({
 });
 const nuxtApp = useNuxtApp();
 const link = ref(null);
+const requirements = ref(null);
 const login = async () => {
     loading.value = true;
     var response = await nuxtApp.$liftservice().login();
     loading.value = false;
     console.log('response[data]:', response.data.value['link']);
     link.value = response.data.value['link'];
-    return response;
+    requirements.value = response.data.value['requirements'];
+};
+const confirm = async () => {
+    var response = await nuxtApp.$liftservice().confirm(requirements.value);
 };
 </script>
 
@@ -41,8 +46,8 @@ const login = async () => {
                     <div>
                         <!-- <label for="email1" class="block text-900 text-xl font-medium mb-2">ЭЦП</label>
                         <InputText id="email1" v-model="email" type="text" placeholder="введите ЭЦП ключь" class="w-full mb-3" style="padding: 1rem" /> -->
-                        <nuxt-link v-if="link" :to="link"><Button :loading="loading" label="Нажмите сюда что бы перейти в егов мобайл" class="w-full p-3 text-xl"></Button></nuxt-link>
-                        <Button v-if="!link" :loading="loading" label="Войти" class="w-full p-3 text-xl" @click="login"></Button>
+                        <nuxt-link v-if="link" :to="link"><Button :loading="loading" @click="confirm" label="Нажмите сюда что бы перейти в егов мобайл" class="w-full p-3 text-xl"></Button></nuxt-link>
+                        <Button v-else :loading="loading" label="Войти" class="w-full p-3 text-xl" @click="login"></Button>
                     </div>
                 </div>
             </div>
