@@ -10,7 +10,7 @@ import (
 
 func corsMiddleware() gin.HandlerFunc {
 	// cfg := config.Get()
-	// cfg.CORS.AllowOrigins = append(cfg.CORS.AllowOrigins, "http://192.168.1.32:3000/")
+	// cfg.CORS.AllowOrigins = append(cfg.CORS.AllowOrigins, "http://0.0.0.0:3000/")
 	corsProvided := cors.New(cors.Config{
 		// AllowAllOrigins: true,
 		AllowOrigins: []string{"*"}, // Provide your list of allowed origins here

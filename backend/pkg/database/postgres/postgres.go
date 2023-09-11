@@ -57,10 +57,10 @@ func New(ctx context.Context, connectionConfig ConnectionConfig, opts ...Option)
 	}
 
 	// Ping the database to check the connection
-	// if err := dbpool.Ping(ctx); err != nil {
-	// 	fmt.Fprintf(os.Stderr, "Unable to ping database: %v\n", err)
-	// 	os.Exit(1)
-	// }
+	if err := dbpool.Ping(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to ping database: %v\n", err)
+		os.Exit(1)
+	}
 
 	instance.Pool = dbpool
 	defer dbpool.Close()

@@ -1,5 +1,5 @@
 # Latest golang image on Alpine Linux
-FROM golang:1.20-alpine
+FROM golang:1.21.1-alpine3.18
 
 # Work directory
 WORKDIR /app

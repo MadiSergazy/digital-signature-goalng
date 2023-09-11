@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultHost              string        = "192.168.1.32"
+	defaultHost              string        = "0.0.0.0"
 	defaultPort              string        = "8080"
 	defaultMaxHeaderBytes    int           = 1 << 20 // 1MB
 	defaultReadTimeout       time.Duration = 5 * time.Second

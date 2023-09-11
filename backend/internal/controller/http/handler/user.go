@@ -9,7 +9,8 @@ import (
 
 	"mado/internal"
 	"mado/internal/auth"
-	"mado/internal/controller/http/httperr"
+
+	// "mado/internal/controller/http/httperr"
 	"mado/internal/core/user"
 )
 
@@ -43,7 +44,7 @@ func newUserHandler(deps userDeps) {
 	{
 		usersGroup.GET("/", handler.getUser)
 		usersGroup.POST("/", handler.createUser)    // api/users/
-		usersGroup.POST("/login", handler.authUser) // api/users/login
+		usersGroup.POST("/login", handler.sendLink) // api/users/login
 
 	}
 
@@ -75,24 +76,24 @@ type loginUserResponse struct {
 	BIN      *string `json:"bin"`
 }
 
-// TODO implement this properly
-func (h userHandler) loginUser(c *gin.Context) {
-	var request loginUserRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		httperr.BadRequest(c, "invalid-request", err)
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{})
+type LoginRequirements struct {
+	Context  context.Context              `json:"context"`
+	QrSigner *internal.QRSigningClientCMS `json:"qrsigner"`
+	Nonce    *string                      `json:"nonce"`
 }
 
-func (h userHandler) authUser(c *gin.Context) {
-	// var request ECP
-	// if err := c.ShouldBind(&request); err != nil {
-	// 	httperr.BadRequest(c, "invalid-request", err)
-	// 	return
-	// }
+// TODO implement this properly
+// func (h userHandler) loginUser(c *gin.Context) {
+// 	var request loginUserRequest
+// 	if err := c.ShouldBindJSON(&request); err != nil {
+// 		httperr.BadRequest(c, "invalid-request", err)
+// 		return
+// 	}
 
+// 	c.JSON(http.StatusOK, gin.H{})
+// }
+
+func (h userHandler) sendLink(c *gin.Context) {
 	egovMobileLink, qrSigner, nonce := auth.PreparationStep()
 	if egovMobileLink == nil || qrSigner == nil || nonce == nil {
 		fmt.Println("egovMobileLink: ", egovMobileLink)
@@ -100,12 +101,9 @@ func (h userHandler) authUser(c *gin.Context) {
 		return
 	}
 	go h.userService.Login(context.Background(), qrSigner, nonce)
-
-	// for {
-	// 	select
-	// }
 	c.JSON(http.StatusOK, gin.H{"link": egovMobileLink})
+}
 
-	// h.userService.Login(context.Background(), qrSigner, nonce)
-
+func (h userHandler) confirmCredentials(c *gin.Context) {
+	h.userService.Login(context.Background(), qrSigner, nonce)
 }
