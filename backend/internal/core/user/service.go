@@ -69,13 +69,14 @@ func (s Service) Login(ctx context.Context, qrSigner *internal.QRSigningClientCM
 		fmt.Println("Authentication error:", err)
 	}
 	fmt.Println(response)
-	s.userRepository.Create(ctx, &User{
+
+	return s.userRepository.Create(ctx, &User{ // temporary it will return nil
 		Username: &response.Subject,
 		Email:    &response.Email,
 		IIN:      &response.UserID,
 		BIN:      &response.BusinessID,
 	})
-	return nil, nil
+
 }
 
 // todo do it properly
