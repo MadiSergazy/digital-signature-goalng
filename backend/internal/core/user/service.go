@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	// "mado/internal"
 	"mado/internal/auth"
@@ -52,8 +53,8 @@ func (s Service) Create(ctx context.Context, dto *User) (*User, error) {
 // todo do it properly
 // Login provides user login.
 func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
-	// ctx, cancel := context.WithTimeout(ctx, time.Second*10)
-	// defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
 
 	signature := auth.GetNonceSignature(requirements.QrSigner)
 	// nonce
