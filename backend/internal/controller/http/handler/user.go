@@ -7,8 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"mado/internal"
+	// "mado/internal"
 	"mado/internal/auth"
+	"mado/internal/auth/model"
 
 	// "mado/internal/controller/http/httperr"
 	"mado/internal/core/user"
@@ -21,7 +22,7 @@ type ECP struct {
 // UserService is a user service interface.
 type UserService interface {
 	// Create(ctx context.Context, dto user.CreateDTO) (user.User, error)
-	Login(ctx context.Context, qrSigner *internal.QRSigningClientCMS, nonce *string) (*user.User, error)
+	Login(model.LoginRequirements) (*user.User, error)
 	LogOut(ctx context.Context, user *user.User) error
 }
 
@@ -45,6 +46,7 @@ func newUserHandler(deps userDeps) {
 		usersGroup.GET("/", handler.getUser)
 		usersGroup.POST("/", handler.createUser)    // api/users/
 		usersGroup.POST("/login", handler.sendLink) // api/users/login
+		usersGroup.POST("/confirm", handler.confirmCredentials)
 
 	}
 
@@ -76,12 +78,6 @@ type loginUserResponse struct {
 	BIN      *string `json:"bin"`
 }
 
-type LoginRequirements struct {
-	Context  context.Context              `json:"context"`
-	QrSigner *internal.QRSigningClientCMS `json:"qrsigner"`
-	Nonce    *string                      `json:"nonce"`
-}
-
 // TODO implement this properly
 // func (h userHandler) loginUser(c *gin.Context) {
 // 	var request loginUserRequest
@@ -100,10 +96,19 @@ func (h userHandler) sendLink(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"err": "egovMobileLink or qrSigner or nonce is nil"})
 		return
 	}
-	go h.userService.Login(context.Background(), qrSigner, nonce)
-	c.JSON(http.StatusOK, gin.H{"link": egovMobileLink})
+	requirements := model.LoginRequirements{QrSigner: qrSigner, Nonce: nonce}
+	// go h.userService.Login(context.Background(), qrSigner, nonce)
+	c.JSON(http.StatusOK, gin.H{"link": egovMobileLink, "requirements": requirements})
+	return
 }
 
 func (h userHandler) confirmCredentials(c *gin.Context) {
-	h.userService.Login(context.Background(), qrSigner, nonce)
+	var request model.LoginRequirements
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	h.userService.Login(request)
+	c.JSON(http.StatusOK, gin.H{})
+	return
 }

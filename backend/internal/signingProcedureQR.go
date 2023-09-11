@@ -23,6 +23,7 @@ type QRSigningClientCMS struct {
 	EGovBusinessLaunchLink string
 }
 
+
 // NewQRSigningClientCMS creates a new instance of QRSigningClientCMS.
 /**
   * Конструктор.

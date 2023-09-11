@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"mado/internal"
+	// "mado/internal"
 	"mado/internal/auth"
 	"mado/internal/auth/model"
 )
@@ -48,15 +48,15 @@ func (s Service) Create(ctx context.Context, dto *User) (*User, error) {
 
 // todo do it properly
 // Login provides user login.
-func (s Service) Login(ctx context.Context, qrSigner *internal.QRSigningClientCMS, nonce *string) (*User, error) {
+func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	// ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 	// defer cancel()
 
-	signature := auth.GetNonceSignature(qrSigner)
+	signature := auth.GetNonceSignature(requirements.QrSigner)
 	// nonce
 
 	req := model.AuthRequest{
-		Nonce:     nonce,
+		Nonce:     requirements.Nonce,
 		Signature: signature,
 		External:  true,
 	}

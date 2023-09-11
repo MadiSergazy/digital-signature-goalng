@@ -38,11 +38,6 @@ func NewRouter(deps Deps) *gin.Engine {
 		newTestURLHandler(testURLDeps{
 			router: router,
 		})
-		// newProfileHandler(profileDeps{
-		// 	router:         api,
-
-		// 	profileService: deps.Services.Profile,
-		// })
 	}
 
 	return router
