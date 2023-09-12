@@ -5,7 +5,7 @@
 -- Dumped from database version 15.1
 -- Dumped by pg_dump version 15.1
 
--- Started on 2023-09-04 18:38:30 +06
+-- Started on 2023-09-11 17:34:23 +06
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -157,7 +157,8 @@ CREATE TABLE public.users (
     iin text NOT NULL,
     email character varying(255),
     bin character varying(255),
-    is_manager boolean DEFAULT false NOT NULL
+    is_manager boolean DEFAULT false NOT NULL,
+    name character varying(255) NOT NULL
 );
 
 
@@ -217,7 +218,7 @@ COPY public.survey (id, name, status, rka, rc_name, adress, question_id) FROM st
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, iin, email, bin, is_manager) FROM stdin;
+COPY public.users (id, iin, email, bin, is_manager, name) FROM stdin;
 \.
 
 
@@ -265,7 +266,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 5, true);
 CREATE TRIGGER validate_email_insert BEFORE INSERT ON public.users FOR EACH ROW EXECUTE FUNCTION public.check_email_validity();
 
 
--- Completed on 2023-09-04 18:38:30 +06
+-- Completed on 2023-09-11 17:34:23 +06
 
 --
 -- PostgreSQL database dump complete

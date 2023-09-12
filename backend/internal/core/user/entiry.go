@@ -5,9 +5,9 @@ import (
 )
 
 type User struct {
-	ID       uuid.UUID
-	Username *string
-	Email    *string
-	IIN      *string
-	BIN      *string
+	ID       uuid.UUID `json:"id"`
+	Username *string   `json:"username"`
+	Email    *string   `json:"email"`
+	IIN      *string   `json:"iin"`
+	BIN      *string   `json:"bin"`
 }

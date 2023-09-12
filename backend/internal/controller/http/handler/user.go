@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -23,7 +22,7 @@ type ECP struct {
 type UserService interface {
 	// Create(ctx context.Context, dto user.CreateDTO) (user.User, error)
 	Login(model.LoginRequirements) (*user.User, error)
-	LogOut(ctx context.Context, user *user.User) error
+	// GetAllRows()()
 }
 
 type userDeps struct {
@@ -78,17 +77,6 @@ type loginUserResponse struct {
 	BIN      *string `json:"bin"`
 }
 
-// TODO implement this properly
-// func (h userHandler) loginUser(c *gin.Context) {
-// 	var request loginUserRequest
-// 	if err := c.ShouldBindJSON(&request); err != nil {
-// 		httperr.BadRequest(c, "invalid-request", err)
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{})
-// }
-
 func (h userHandler) sendLink(c *gin.Context) {
 	egovMobileLink, qrSigner, nonce := auth.PreparationStep()
 	if egovMobileLink == nil || qrSigner == nil || nonce == nil {
@@ -103,12 +91,21 @@ func (h userHandler) sendLink(c *gin.Context) {
 }
 
 func (h userHandler) confirmCredentials(c *gin.Context) {
-	var request model.LoginRequirements
-	if err := c.ShouldBindJSON(request); err != nil {
+	var request *model.LoginRequirements
+	if err := c.BindJSON(&request); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	h.userService.Login(request)
-	c.JSON(http.StatusOK, gin.H{})
+	request.Context = &gin.Context{}
+	user, err := h.userService.Login(*request)
+	if err != nil {
+		c.AbortWithStatus(http.StatusOK)
+	}
+	c.JSON(http.StatusOK, gin.H{"user": user})
 	return
 }
+
+// func (h userHandler) getAllRows(c *gin.Context) {
+// 	rows := h.userService.GetAllRows()
+// 	c.JSON(http.StatusOK, gin.H{"rows":rows})
+// }
