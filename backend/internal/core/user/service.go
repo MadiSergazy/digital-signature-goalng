@@ -1,9 +1,16 @@
 package user
 
 import (
+	"bytes"
 	"context"
+<<<<<<< HEAD
 	"errors"
+=======
+	"encoding/json"
+>>>>>>> f9d5727 (frontend and backend connected)
 	"fmt"
+	"net/http"
+	"regexp"
 
 	// "mado/internal"
 	"mado/internal/auth"
@@ -22,6 +29,11 @@ type Service struct {
 	userRepository Repository
 }
 
+const (
+	block   = "Блок данных на подпись"
+	baseURL = "https://sigex.kz"
+)
+
 // NewService creates a new user service.
 func NewService(userRepository Repository) Service {
 	return Service{
@@ -29,34 +41,8 @@ func NewService(userRepository Repository) Service {
 	}
 }
 
-// todo do it properly
-// Create creates a new user.
-func (s Service) Create(ctx context.Context, dto *User) (*User, error) {
-
-	// user := User{
-	// 	Email:    dto.Email,
-	// 	Username: dto.Username,
-	// 	IIN:      dto.IIN,
-	// 	BIN:      dto.BIN,
-	// }
-
-	// user, err := s.userRepository.Create(ctx, user)
-	// if err != nil {
-	// 	return &User{}, fmt.Errorf("can not create user: %w", err)
-	// }
-
-	// return &user, nil
-	return nil, nil
-}
-
-// todo do it properly
-// Login provides user login.
 func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
-	// ctx, cancel := context.WithTimeout(ctx, time.Second*10)
-	// defer cancel()
-
 	signature := auth.GetNonceSignature(requirements.QrSigner)
-	// nonce
 
 	req := model.AuthRequest{
 		Nonce:     requirements.Nonce,
@@ -64,11 +50,12 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 		External:  true,
 	}
 
-	response, err := model.Authentification(req)
+	response, err := authentification(req)
 	if err != nil {
 		fmt.Println("Authentication error:", err)
 	}
 	fmt.Println(response)
+<<<<<<< HEAD
 
 	return s.userRepository.Create(ctx, &User{ // temporary it will return nil
 		Username: &response.Subject,
@@ -77,9 +64,63 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 		BIN:      &response.BusinessID,
 	})
 
+=======
+	fmt.Println("email:", response.Email)
+	fmt.Println("IIN:", response.UserID)
+	fmt.Println("BIN:", response.BusinessID)
+	fmt.Println("Name:", getName(response.Subject))
+	user := &User{Username: getName(response.Subject), IIN: &response.UserID, Email: &response.Email, BIN: &response.BusinessID}
+	s.userRepository.Create(requirements.Context, user)
+	return user, nil
+>>>>>>> f9d5727 (frontend and backend connected)
 }
 
-// todo do it properly
-func (s Service) LogOut(ctx context.Context, user *User) error {
+func authentification(request model.AuthRequest) (*model.AuthResponse, error) {
+
+	requestData, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := http.Post(baseURL+"/api/auth", "application/json", bytes.NewReader(requestData))
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Server returned status '%d: %s", response.StatusCode, response.Status)
+	}
+
+	var responseJSON model.AuthResponse
+	err = json.NewDecoder(response.Body).Decode(&responseJSON)
+	if err != nil {
+		return nil, err
+	}
+
+	return &responseJSON, nil
+}
+
+func getName(input string) *string {
+
+	// Define regular expressions to match CN and GIVENNAME values
+	cnRegex := regexp.MustCompile(`CN=([^,]+)`)
+	givenNameRegex := regexp.MustCompile(`GIVENNAME=([^,]+)`)
+
+	// Find CN and GIVENNAME values using regular expressions
+	cnMatch := cnRegex.FindStringSubmatch(input)
+	givenNameMatch := givenNameRegex.FindStringSubmatch(input)
+
+	// Check if both CN and GIVENNAME values were found
+	if len(cnMatch) > 1 && len(givenNameMatch) > 1 {
+		cnValue := cnMatch[1]
+		givenNameValue := givenNameMatch[1]
+
+		// Print the extracted values
+		result := fmt.Sprintf("%s %s", cnValue, givenNameValue)
+		return &result
+	} else {
+		fmt.Println("CN and/or GIVENNAME not found in the input string.")
+	}
 	return nil
 }
