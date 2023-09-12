@@ -3,25 +3,16 @@ package user
 import (
 	"bytes"
 	"context"
-
-	"errors"
-
 	"encoding/json"
-
 	"fmt"
-
 	"net/http"
 	"regexp"
-
 	"time"
-
 
 	// "mado/internal"
 	"mado/internal/auth"
 	"mado/internal/auth/model"
 )
-
-var parsingError = errors.New("Error parsing JSON: ")
 
 // Repository is a user repository.
 type Repository interface {
@@ -49,7 +40,6 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-
 	signature := auth.GetNonceSignature(requirements.QrSigner)
 
 	req := model.AuthRequest{
@@ -68,7 +58,7 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	fmt.Println("BIN:", response.BusinessID)
 	fmt.Println("Name:", getName(response.Subject))
 	user := &User{Username: getName(response.Subject), IIN: &response.UserID, Email: &response.Email, BIN: &response.BusinessID}
-	s.userRepository.Create(requirements.Context, user)
+	s.userRepository.Create(ctx, user)
 	return user, nil
 }
 

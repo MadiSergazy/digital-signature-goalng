@@ -9,7 +9,6 @@ import (
 	// "mado/internal"
 	"mado/internal/auth"
 	"mado/internal/auth/model"
-
 	// "mado/internal/controller/http/httperr"
 	"mado/internal/core/user"
 )
@@ -96,7 +95,7 @@ func (h userHandler) confirmCredentials(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	request.Context = &gin.Context{}
+	// request.Context = &gin.Context{}
 	user, err := h.userService.Login(*request)
 	if err != nil {
 		c.AbortWithStatus(http.StatusOK)
