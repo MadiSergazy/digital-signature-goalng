@@ -3,14 +3,18 @@ package user
 import (
 	"bytes"
 	"context"
-<<<<<<< HEAD
+
 	"errors"
-=======
+
 	"encoding/json"
->>>>>>> f9d5727 (frontend and backend connected)
+
 	"fmt"
+
 	"net/http"
 	"regexp"
+
+	"time"
+
 
 	// "mado/internal"
 	"mado/internal/auth"
@@ -42,6 +46,10 @@ func NewService(userRepository Repository) Service {
 }
 
 func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+
 	signature := auth.GetNonceSignature(requirements.QrSigner)
 
 	req := model.AuthRequest{
@@ -55,16 +63,6 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 		fmt.Println("Authentication error:", err)
 	}
 	fmt.Println(response)
-<<<<<<< HEAD
-
-	return s.userRepository.Create(ctx, &User{ // temporary it will return nil
-		Username: &response.Subject,
-		Email:    &response.Email,
-		IIN:      &response.UserID,
-		BIN:      &response.BusinessID,
-	})
-
-=======
 	fmt.Println("email:", response.Email)
 	fmt.Println("IIN:", response.UserID)
 	fmt.Println("BIN:", response.BusinessID)
@@ -72,7 +70,6 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	user := &User{Username: getName(response.Subject), IIN: &response.UserID, Email: &response.Email, BIN: &response.BusinessID}
 	s.userRepository.Create(requirements.Context, user)
 	return user, nil
->>>>>>> f9d5727 (frontend and backend connected)
 }
 
 func authentification(request model.AuthRequest) (*model.AuthResponse, error) {
