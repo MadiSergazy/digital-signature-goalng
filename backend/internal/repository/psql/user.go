@@ -39,9 +39,10 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 	`
 
 	// Execute the SQL statement
-	result, err := ur.db.Pool.Exec(ctx, sqlStatement, dto.IIN, dto.Email, dto.BIN, dto.Username, false)
+	fmt.Println(ctx, sqlStatement, &dto.IIN, &dto.Email, &dto.BIN, &dto.Username, false)
+	result, err := ur.db.Pool.Exec(ctx, sqlStatement, &dto.IIN, &dto.Email, &dto.BIN, &dto.Username, false)
 	if err != nil {
-		fmt.Println("error executing sql statement")
+		fmt.Println("error executing sql statement:", err)
 		return nil, err
 	}
 
