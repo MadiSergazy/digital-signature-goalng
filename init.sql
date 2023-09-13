@@ -5,7 +5,7 @@
 -- Dumped from database version 15.1
 -- Dumped by pg_dump version 15.1
 
--- Started on 2023-09-13 11:46:23 +06
+-- Started on 2023-09-13 12:57:29 +06
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -107,7 +107,8 @@ CREATE TABLE public.survey (
     rka text NOT NULL,
     rc_name character varying(255) NOT NULL,
     adress character varying(255) NOT NULL,
-    question_id integer[] NOT NULL
+    question_id integer[] NOT NULL,
+    survey_id integer[]
 );
 
 
@@ -189,7 +190,7 @@ COPY public.question (id, description, answer_id) FROM stdin;
 -- Data for Name: survey; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.survey (id, name, status, rka, rc_name, adress, question_id) FROM stdin;
+COPY public.survey (id, name, status, rka, rc_name, adress, question_id, survey_id) FROM stdin;
 \.
 
 
@@ -239,7 +240,7 @@ SELECT pg_catalog.setval('public.survey_id_seq', 1, false);
 SELECT pg_catalog.setval('public.users_id_seq', 5, true);
 
 
--- Completed on 2023-09-13 11:46:23 +06
+-- Completed on 2023-09-13 12:57:29 +06
 
 --
 -- PostgreSQL database dump complete

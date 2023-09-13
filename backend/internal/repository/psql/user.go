@@ -44,8 +44,9 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 	logger.FromContext(ctx).Debug("create user query", zap.String("sql", sqlStatement), zap.Any("args", dto))
 
 	// Execute the SQL statement
-	fmt.Println(ctx, sqlStatement, &dto.IIN, &dto.Email, &dto.BIN, &dto.Username, false)
-	result, err := ur.db.Pool.Exec(ctx, sqlStatement, &dto.IIN, &dto.Email, &dto.BIN, &dto.Username, false)
+	iin := (*dto.IIN)[3:]
+	fmt.Println(ctx, sqlStatement, iin, *dto.Email, *dto.BIN, *dto.Username, false)
+	result, err := ur.db.Pool.Exec(ctx, sqlStatement, iin, *dto.Email, *dto.BIN, *dto.Username, false)
 	if err != nil {
 
 		fmt.Println("error executing sql statement")
