@@ -54,19 +54,11 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	}
 	fmt.Println(response)
 	user := &User{Username: getName(response.Subject), IIN: &response.UserID, Email: &response.Email, BIN: &response.BusinessID}
-<<<<<<< HEAD
-	user, err = s.userRepository.Create(ctx, user)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-=======
 	fmt.Println("email:", user.Email)
 	fmt.Println("IIN:", user.IIN)
 	fmt.Println("BIN:", user.BIN)
 	fmt.Println("Name:", *getName(response.Subject))
 	s.userRepository.Create(ctx, user)
->>>>>>> 00bd1b549c066e0367b2e74ee51c81abd19ab4fe
 	return user, nil
 }
 
