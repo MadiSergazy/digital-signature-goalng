@@ -63,7 +63,7 @@ func New(ctx context.Context, connectionConfig ConnectionConfig, opts ...Option)
 	}
 
 	instance.Pool = dbpool
-	defer dbpool.Close()
+	// defer dbpool.Close()
 
 	/*var err error
 	if err := DoWithTrials(func() error {
