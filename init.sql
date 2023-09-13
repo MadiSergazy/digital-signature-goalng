@@ -5,7 +5,7 @@
 -- Dumped from database version 15.1
 -- Dumped by pg_dump version 15.1
 
--- Started on 2023-09-11 17:34:23 +06
+-- Started on 2023-09-13 11:46:23 +06
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,26 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 222 (class 1255 OID 19560)
--- Name: check_email_validity(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.check_email_validity() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF NOT public.f_IsValidEmail(NEW.email) THEN
-        RAISE EXCEPTION 'Invalid email address: %', NEW.email;
-    END IF;
-    RETURN NEW;
-END;
-$$;
-
-
-ALTER FUNCTION public.check_email_validity() OWNER TO postgres;
-
---
--- TOC entry 223 (class 1255 OID 19570)
+-- TOC entry 222 (class 1255 OID 19570)
 -- Name: f_isvalidemail(text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -180,7 +161,7 @@ ALTER TABLE public.users ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- TOC entry 3629 (class 0 OID 19553)
+-- TOC entry 3627 (class 0 OID 19553)
 -- Dependencies: 220
 -- Data for Name: answer; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -193,7 +174,7 @@ COPY public.answer (id, name) FROM stdin;
 
 
 --
--- TOC entry 3627 (class 0 OID 19544)
+-- TOC entry 3625 (class 0 OID 19544)
 -- Dependencies: 218
 -- Data for Name: question; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -203,7 +184,7 @@ COPY public.question (id, description, answer_id) FROM stdin;
 
 
 --
--- TOC entry 3625 (class 0 OID 19530)
+-- TOC entry 3623 (class 0 OID 19530)
 -- Dependencies: 216
 -- Data for Name: survey; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -213,7 +194,7 @@ COPY public.survey (id, name, status, rka, rc_name, adress, question_id) FROM st
 
 
 --
--- TOC entry 3623 (class 0 OID 19521)
+-- TOC entry 3621 (class 0 OID 19521)
 -- Dependencies: 214
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -223,7 +204,7 @@ COPY public.users (id, iin, email, bin, is_manager, name) FROM stdin;
 
 
 --
--- TOC entry 3636 (class 0 OID 0)
+-- TOC entry 3634 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: answer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -232,7 +213,7 @@ SELECT pg_catalog.setval('public.answer_id_seq', 3, true);
 
 
 --
--- TOC entry 3637 (class 0 OID 0)
+-- TOC entry 3635 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: question_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -241,7 +222,7 @@ SELECT pg_catalog.setval('public.question_id_seq', 1, false);
 
 
 --
--- TOC entry 3638 (class 0 OID 0)
+-- TOC entry 3636 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: survey_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -250,7 +231,7 @@ SELECT pg_catalog.setval('public.survey_id_seq', 1, false);
 
 
 --
--- TOC entry 3639 (class 0 OID 0)
+-- TOC entry 3637 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -258,15 +239,7 @@ SELECT pg_catalog.setval('public.survey_id_seq', 1, false);
 SELECT pg_catalog.setval('public.users_id_seq', 5, true);
 
 
---
--- TOC entry 3480 (class 2620 OID 19571)
--- Name: users validate_email_insert; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER validate_email_insert BEFORE INSERT ON public.users FOR EACH ROW EXECUTE FUNCTION public.check_email_validity();
-
-
--- Completed on 2023-09-11 17:34:23 +06
+-- Completed on 2023-09-13 11:46:23 +06
 
 --
 -- PostgreSQL database dump complete
