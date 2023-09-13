@@ -112,7 +112,7 @@ func Get() *Config {
 
 		// Change the working directory to where the .env file is located.
 		// Adjust the path as needed.
-		err = os.Chdir("../../../")
+		err = os.Chdir("../../")
 		if err != nil {
 			log.Fatalf("Error changing working directory: %v", err)
 		}
