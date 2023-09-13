@@ -54,9 +54,9 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	}
 	fmt.Println(response)
 	user := &User{Username: getName(response.Subject), IIN: &response.UserID, Email: &response.Email, BIN: &response.BusinessID}
-	fmt.Println("email:", user.Email)
-	fmt.Println("IIN:", user.IIN)
-	fmt.Println("BIN:", user.BIN)
+	fmt.Println("email:", *user.Email)
+	fmt.Println("IIN:", *user.IIN)
+	fmt.Println("BIN:", *user.BIN)
 	fmt.Println("Name:", *getName(response.Subject))
 	s.userRepository.Create(ctx, user)
 	return user, nil
