@@ -35,13 +35,11 @@ type (
 
 	// HTTP is the configuration for the HTTP server.
 	HTTP struct {
-
 		Host           string        `envconfig:"HTTP_HOST" default:"0.0.0.0"` //               required:"true"`
 		Port           string        `envconfig:"HTTP_PORT" default:"8080"`    //               required:"true"`
 		MaxHeaderBytes int           `envconfig:"HTTP_MAX_HEADER_BYTES"                 default:"1"`
 		ReadTimeout    time.Duration `envconfig:"HTTP_READ_TIMEOUT"                     default:"10s"`
 		WriteTimeout   time.Duration `envconfig:"HTTP_WRITE_TIMEOUT"                    default:"10s"`
-
 	}
 
 	// Postgres is the configuration for the Postgres database.

@@ -15,7 +15,6 @@ import (
 
 	"time"
 
-
 	// "mado/internal"
 	"mado/internal/auth"
 	"mado/internal/auth/model"
@@ -48,7 +47,6 @@ func NewService(userRepository Repository) Service {
 func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
-
 
 	signature := auth.GetNonceSignature(requirements.QrSigner)
 
