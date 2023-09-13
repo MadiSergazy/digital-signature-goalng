@@ -37,7 +37,7 @@ func NewService(userRepository Repository) Service {
 }
 
 func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
-	_, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
 	signature := auth.GetNonceSignature(requirements.QrSigner)
