@@ -1,7 +1,6 @@
 package model
 
 import (
-	"context"
 	"mado/internal"
 )
 
@@ -38,7 +37,7 @@ type AuthRequest struct {
 }
 
 type LoginRequirements struct {
-	Context  context.Context              `json:"context"`
+	// Context  context.Context              `json:"context"`
 	QrSigner *internal.QRSigningClientCMS `json:"qrsigner"`
 	Nonce    *string                      `json:"nonce"`
 }
