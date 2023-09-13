@@ -5,8 +5,11 @@ import (
 	"errors"
 	"fmt"
 
+	"go.uber.org/zap"
+
 	"mado/internal/core/user"
 	"mado/pkg/database/postgres"
+	"mado/pkg/logger"
 )
 
 // UserRepository is a user repository.
@@ -25,7 +28,7 @@ var errInsert = errors.New("can not insert user: ")
 
 // TODO do it properly
 func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User, error) {
-	fmt.Println("creating user in repository")
+
 	// Ensure you have a valid database connection
 	if ur.db == nil {
 		fmt.Println("database connection is nil")
@@ -38,12 +41,15 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 		VALUES ($1, $2, $3, $4, $5);
 	`
 
+	logger.FromContext(ctx).Debug("create user query", zap.String("sql", sqlStatement), zap.Any("args", dto))
+
 	// Execute the SQL statement
 	fmt.Println(ctx, sqlStatement, &dto.IIN, &dto.Email, &dto.BIN, &dto.Username, false)
 	result, err := ur.db.Pool.Exec(ctx, sqlStatement, &dto.IIN, &dto.Email, &dto.BIN, &dto.Username, false)
 	if err != nil {
-		fmt.Println("error executing sql statement:", err)
-		return nil, err
+
+		fmt.Println("error executing sql statement")
+		return nil, fmt.Errorf("%w%w", errInsert, err)
 	}
 
 	// Check the number of rows affected (usually for error checking)
