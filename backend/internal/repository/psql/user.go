@@ -25,8 +25,10 @@ var errInsert = errors.New("can not insert user: ")
 
 // TODO do it properly
 func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User, error) {
+	fmt.Println("creating user in repository")
 	// Ensure you have a valid database connection
 	if ur.db == nil {
+		fmt.Println("database connection is nil")
 		return nil, errors.New("database connection is nil")
 	}
 
@@ -39,12 +41,14 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 	// Execute the SQL statement
 	result, err := ur.db.Pool.Exec(ctx, sqlStatement, dto.IIN, dto.Email, dto.BIN, dto.Username, false)
 	if err != nil {
+		fmt.Println("error executing sql statement")
 		return nil, err
 	}
 
 	// Check the number of rows affected (usually for error checking)
 	rowsAffected := result.RowsAffected()
 	if rowsAffected != 1 {
+		fmt.Println("number of rows affected err")
 		return nil, fmt.Errorf("expected 1 row to be affected, but %d rows were affected", rowsAffected)
 	}
 
