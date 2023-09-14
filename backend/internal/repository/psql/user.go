@@ -26,6 +26,31 @@ func NewUserRepository(db *postgres.Postgres) UserRepository {
 
 var errInsert = errors.New("can not insert user: ")
 
+func (ur UserRepository) CheckIfUserExistsByIIN(ctx context.Context, iin string) (bool, error) {
+	// Ensure you have a valid database connection
+	if ur.db == nil {
+		fmt.Println("database connection is nil")
+		return false, errors.New("database connection is nil")
+	}
+
+	// Prepare the SQL statement to count the number of users with the given iin
+	sqlStatement := `
+        SELECT COUNT(*) FROM users WHERE iin = $1;
+    `
+
+	logger.FromContext(ctx).Debug("check user existence by iin query", zap.String("sql", sqlStatement), zap.String("iin", iin))
+
+	var count int
+	err := ur.db.Pool.QueryRow(ctx, sqlStatement, iin).Scan(&count)
+	if err != nil {
+		fmt.Println("error executing SQL statement")
+		return false, fmt.Errorf("%w", err)
+	}
+
+	// If the count is greater than 0, it means a user with the given iin already exists
+	return count > 0, nil
+}
+
 // TODO do it properly
 func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User, error) {
 
@@ -44,9 +69,9 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 	logger.FromContext(ctx).Debug("create user query", zap.String("sql", sqlStatement), zap.Any("args", dto))
 
 	// Execute the SQL statement
-	iin := (*dto.IIN)[3:]
-	fmt.Println(ctx, sqlStatement, iin, *dto.Email, *dto.BIN, *dto.Username, false)
-	result, err := ur.db.Pool.Exec(ctx, sqlStatement, iin, *dto.Email, *dto.BIN, *dto.Username, false)
+
+	fmt.Println(ctx, sqlStatement, *dto.IIN, *dto.Email, *dto.BIN, *dto.Username, *dto.Is_manager)
+	result, err := ur.db.Pool.Exec(ctx, sqlStatement, *dto.IIN, *dto.Email, *dto.BIN, *dto.Username, *dto.Is_manager)
 	if err != nil {
 
 		fmt.Println("error executing sql statement")
