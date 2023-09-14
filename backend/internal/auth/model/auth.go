@@ -38,6 +38,7 @@ type AuthRequest struct {
 
 type LoginRequirements struct {
 	// Context  context.Context              `json:"context"`
-	QrSigner *internal.QRSigningClientCMS `json:"qrsigner"`
-	Nonce    *string                      `json:"nonce"`
+	QrSigner   *internal.QRSigningClientCMS `json:"qrsigner"`
+	Nonce      *string                      `json:"nonce"`
+	Is_manager *bool                        `json:"is_manager"`
 }
