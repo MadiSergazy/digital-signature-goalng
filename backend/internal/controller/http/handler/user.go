@@ -62,21 +62,6 @@ func (h userHandler) getUser(c *gin.Context) {
 	fmt.Println("GetUser")
 }
 
-// TODO implement this properly
-type loginUserRequest struct {
-	User struct {
-		Email    string `json:"email"    binding:"required,email"`
-		Password string `json:"password" binding:"required,min=6"`
-	} `json:"user" binding:"required"`
-}
-
-type loginUserResponse struct {
-	Username *string `json:"username"`
-	Email    *string `json:"email"`
-	IIN      *string `json:"iin"`
-	BIN      *string `json:"bin"`
-}
-
 func (h userHandler) sendLink(c *gin.Context) {
 	egovMobileLink, qrSigner, nonce := auth.PreparationStep()
 	if egovMobileLink == nil || qrSigner == nil || nonce == nil {
@@ -87,7 +72,7 @@ func (h userHandler) sendLink(c *gin.Context) {
 	requirements := model.LoginRequirements{QrSigner: qrSigner, Nonce: nonce}
 	// go h.userService.Login(context.Background(), qrSigner, nonce)
 	c.JSON(http.StatusOK, gin.H{"link": egovMobileLink, "requirements": requirements})
-	return
+
 }
 
 func (h userHandler) confirmCredentials(c *gin.Context) {
@@ -102,7 +87,7 @@ func (h userHandler) confirmCredentials(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}
 	c.JSON(http.StatusOK, gin.H{"user": user})
-	return
+
 }
 
 // func (h userHandler) getAllRows(c *gin.Context) {
