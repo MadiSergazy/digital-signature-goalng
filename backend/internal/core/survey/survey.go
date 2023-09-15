@@ -19,5 +19,28 @@ func NewService(surveyRepository Repository) Service {
 }
 
 func (s Service) Create(requirements *SurveyRequirements) (*SurveyRequirements, error) {
-	return nil, nil
+
+	if err := s.ValidateSurveyRequirements(requirements); err != nil {
+		return nil, err
+	}
+
+	return s.surveyRepository.Create(requirements)
+}
+
+func (s Service) ValidateSurveyRequirements(requirements *SurveyRequirements) error {
+	if requirements == nil {
+		return ErrSurvey
+	}
+
+	if requirements.Name == "" {
+		return ErrSurveyName
+	}
+
+	if len(requirements.Questions) == 0 {
+		return ErrSurveyQuestion
+	}
+
+	// Add more checks for other fields as needed
+
+	return nil
 }

@@ -9,7 +9,7 @@ import (
 // Services is a collection of all services in the system.
 type Services struct {
 	User   user.Service
-	Survey *survey.Service
+	Survey survey.Service
 }
 
 // NewServices returns a new instance of Services.
