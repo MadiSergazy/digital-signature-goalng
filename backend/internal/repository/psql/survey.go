@@ -21,3 +21,4 @@ func NewSurveyrRepository(db *postgres.Postgres) SurveyrRepository {
 func (s SurveyrRepository) Create(*survey.SurveyRequirements) (*survey.SurveyRequirements, error) {
 	return nil, nil
 }
+

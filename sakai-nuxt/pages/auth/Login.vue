@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import AppConfig from '@/layouts/AppConfig.vue';
 import { useMainStore } from '../../service/mainstore';
+import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 const loading = ref(false);
 const loading2 = ref(false);
@@ -12,7 +13,7 @@ const logoUrl = computed(() => {
 definePageMeta({
     layout: false
 });
-// const router = useRouter();
+const router = useRouter();
 const is_manager = ref(false);
 const nuxtApp = useNuxtApp();
 const link = ref(null);
@@ -58,7 +59,9 @@ const confirm = async () => {
     store.set_bin(user['bin']);
     store.set_username(user['username']);
     store.set_is_manager(false);
-    // router.push('/test');
+    if (user['iin']) {
+        router.push('/history');
+    }
 };
 </script>
 
@@ -75,7 +78,7 @@ const confirm = async () => {
                         <div class="text-900 text-3xl font-medium mb-3">Добро пожаловать!</div>
                         <span class="text-600 font-medium">Войдите через егов mobile что бы продолжить</span>
                     </div>
-                    <nuxt-link v-if="link"><Button :loading="loading2" @click="confirm" label="Нажмите сюда что бы перейти в егов мобайл" class="w-full p-3 text-xl"></Button></nuxt-link>
+                    <Button v-if="link" :loading="loading2" @click="confirm" label="Нажмите сюда что бы перейти в егов мобайл" class="w-full p-3 text-xl"></Button>
                     <div v-if="!link" style="margin-bottom: 10px">
                         <Button :loading="loading" label="Войти" class="w-full p-3 text-xl" @click="login(false)"></Button>
                     </div>

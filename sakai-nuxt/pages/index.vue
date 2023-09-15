@@ -1,4 +1,11 @@
-<script setup>
+<template>
+    <div></div>
+</template>
+<script>
+export default {};
+</script>
+<style></style>
+<!-- <script setup>
 import { useLayout } from '@/layouts/composables/layout';
 import { ProductService } from '@/service/ProductService';
 import { onMounted, reactive, ref, watch } from 'vue';
@@ -352,4 +359,4 @@ watch(
             </div>
         </div>
     </div>
-</template>
+</template> -->
