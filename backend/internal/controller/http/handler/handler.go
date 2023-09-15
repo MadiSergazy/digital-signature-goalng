@@ -35,6 +35,11 @@ func NewRouter(deps Deps) *gin.Engine {
 			userService: deps.Services.User,
 		})
 
+		newSurveyHandler(
+			surveyDeps{
+				router:        api,
+				surveyService: deps.Services.Survey,
+			})
 		newTestURLHandler(testURLDeps{
 			router: router,
 		})
