@@ -44,4 +44,21 @@ func (h surveyHandler) CreateSurvey(c *gin.Context) {
 		return
 	}
 
+	resp, err := h.surveyService.Create(request)
+	if err != nil {
+		switch err {
+		case survey.ErrSurvey:
+			c.JSON(http.StatusBadRequest, gin.H{"error": "SurveyRequirements is nil"})
+		case survey.ErrSurveyName:
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Name field is empty"})
+		case survey.ErrSurveyQuestion:
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Questions field is empty"})
+		default:
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"created_survey": resp})
+
 }
