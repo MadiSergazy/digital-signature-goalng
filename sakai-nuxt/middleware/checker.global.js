@@ -1,6 +1,9 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-    if (process.server) return;
-    if (to.path !== '/auth/login' && useCookie('access_token')) {
-        return navigateTo('/auth/login');
-    }
+    setTimeout(() => {
+        if (process.server) return;
+        console.log(localStorage.getItem('iin'));
+        if (to.path !== '/auth/login' && !localStorage.getItem('iin')) {
+            return navigateTo('/auth/login');
+        }
+    });
 });

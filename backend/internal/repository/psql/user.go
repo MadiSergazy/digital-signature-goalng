@@ -64,8 +64,7 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 	sqlStatement := `
 		INSERT INTO users (iin, email, bin, name, is_manager) 
 		VALUES ($1, $2, $3, $4, $5);
-	`
-
+		`
 	logger.FromContext(ctx).Debug("create user query", zap.String("sql", sqlStatement), zap.Any("args", dto))
 
 	// Execute the SQL statement
