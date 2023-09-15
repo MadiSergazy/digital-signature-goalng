@@ -5,7 +5,7 @@
 -- Dumped from database version 15.1
 -- Dumped by pg_dump version 15.1
 
--- Started on 2023-09-15 10:48:04 +06
+-- Started on 2023-09-15 11:38:30 +06
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -73,8 +73,7 @@ ALTER TABLE public.answer ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 CREATE TABLE public.question (
     id integer NOT NULL,
-    description character varying,
-    answer_id integer[]
+    description character varying
 );
 
 
@@ -138,7 +137,8 @@ ALTER TABLE public.survey ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 CREATE TABLE public.user_question (
     id integer NOT NULL,
     user_id integer NOT NULL,
-    question_id integer NOT NULL
+    question_id integer NOT NULL,
+    answer_id integer
 );
 
 
@@ -210,7 +210,7 @@ COPY public.answer (id, name) FROM stdin;
 -- Data for Name: question; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.question (id, description, answer_id) FROM stdin;
+COPY public.question (id, description) FROM stdin;
 \.
 
 
@@ -230,7 +230,7 @@ COPY public.survey (id, name, status, rka, rc_name, adress, question_id, created
 -- Data for Name: user_question; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.user_question (id, user_id, question_id) FROM stdin;
+COPY public.user_question (id, user_id, question_id, answer_id) FROM stdin;
 \.
 
 
@@ -289,7 +289,7 @@ SELECT pg_catalog.setval('public.user_question_id_seq', 1, false);
 SELECT pg_catalog.setval('public.users_id_seq', 5, true);
 
 
--- Completed on 2023-09-15 10:48:04 +06
+-- Completed on 2023-09-15 11:38:30 +06
 
 --
 -- PostgreSQL database dump complete

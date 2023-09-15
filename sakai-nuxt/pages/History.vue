@@ -1,5 +1,6 @@
 <template>
     <div class="card p-fluid" style="height: 100vh">
+        <p style="font-weight: bold; font-size: large">Добро пожаловать, Магжан Жумабаев</p>
         <Toolbar class="mb-4">
             <template #start>
                 <Button label="Добавить" icon="pi pi-plus" severity="success" class="mr-2" @click="openDialog" />
@@ -9,7 +10,7 @@
                 <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" />
             </template>
         </Toolbar>
-        <DataTable v-model:editingRows="editingRows" :value="products" v-model:selection="selectedProducts" editMode="row" dataKey="id" @row-edit-save="onRowEditSave" tableClass="editable-cells-table" tableStyle="min-width: 50rem">
+        <DataTable v-model:editingRows="editingRows" :value="products" v-model:selection="selectedProducts" editMode="row" dataKey="name" @row-edit-save="onRowEditSave" tableClass="editable-cells-table" tableStyle="min-width: 50rem">
             <Column selectionMode="multiple" style="width: 5%" :exportable="false"></Column>
             <Column field="code" header="Дата создания" style="width: 20%">
                 <template #editor="{ data, field }">
@@ -58,10 +59,14 @@
             </template>
         </Dialog>
         <Dialog v-model:visible="statisticDialog" :style="{ width: '450px' }" header="Survey Details" :modal="true" class="p-fluid">
-            <p>Survey: {{ selectedProduct.name }}</p>
-            <p>Status: {{ selectedProduct.inventoryStatus }}</p>
+            <p style="font-weight: bold">Survey: {{ selectedProduct.name }}</p>
+            <p style="font-weight: bold">Status: <Tag :value="selectedProduct.inventoryStatus" :severity="getStatusLabel(selectedProduct.inventoryStatus)" /></p>
+
             <div v-for="question in selectedProduct.questions">
-                <p>Вопрос: {{ question.description }}</p>
+                <p style="font-weight: 400">Вопрос: {{ question.description }}</p>
+                <div class="card flex justify-content-center">
+                    <Chart type="pie" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
+                </div>
             </div>
             <template #footer>
                 <Button label="Cancel" icon="pi pi-times" text @click="statisticDialog = false" />
@@ -83,17 +88,18 @@ const confirmDeleteSelected = () => {
     //     element.
     // });
     for (var i = 0; i < selectedProducts.value.length; i++) {
-        products.value[products.value.findIndex((val) => (val.name = selectedProducts.value[i].name))].inventoryStatus = 'НЕАКТИВНО';
+        products.value[products.value.findIndex((val) => val.name == selectedProducts.value[i].name)].inventoryStatus = 'НЕАКТИВНО';
     }
 };
 const selectedProduct = ref();
 const statisticDialog = ref(false);
 const openDialog = () => {
+    questions.value = [{ description: '' }];
+    product['name'] = 'Имя опроса';
     productDialog.value = true;
 };
 const hideDialog = () => {
     productDialog.value = false;
-    questions.value = [{ description: '' }];
 };
 const product = {
     name: 'Имя опроса'
@@ -112,8 +118,10 @@ const addQuestion = () => {
     questions.value.push({ description: '' });
 };
 onMounted(() => {
+    chartData.value = setChartData();
+
     // ProductService.getProductsMini().then((data) => (products.value = data));
-    products.value = [{ code: '19-00', name: 'name', inventoryStatus: 'АКТИВНО', questions: [{ description: 'Idk' }] }];
+    // products.value = [{ code: '19-00', name: 'name', inventoryStatus: 'АКТИВНО', questions: [{ description: 'Idk' }] }];
 });
 
 const onRowEditSave = (event) => {
@@ -129,7 +137,7 @@ const saveProduct = () => {
     const year = currentDate.getFullYear(); // Get full year
 
     const formattedDate = `${day}.${month}.${year}`;
-    products.value.push({ name: product.name, code: formattedDate, inventoryStatus: 'АКТИВНО' });
+    products.value.push({ name: product.name, code: formattedDate, inventoryStatus: 'АКТИВНО', questions: questions.value });
     hideDialog();
 };
 const getStatusLabel = (status) => {
@@ -147,8 +155,30 @@ const getStatusLabel = (status) => {
             return null;
     }
 };
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+const chartData = ref();
+const chartOptions = ref({
+    plugins: {
+        legend: {
+            labels: {
+                usePointStyle: true
+            }
+        }
+    }
+});
+
+const setChartData = () => {
+    const documentStyle = getComputedStyle(document.body);
+
+    return {
+        labels: ['Да', 'Нет', 'Воздержусь'],
+        datasets: [
+            {
+                data: [540, 325, 702],
+                backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500')],
+                hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400')]
+            }
+        ]
+    };
 };
 const viewDetailt = (data) => {
     selectedProduct.value = data;
