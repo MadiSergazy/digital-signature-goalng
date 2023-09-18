@@ -13,8 +13,11 @@ const LiftService = {
         return response;
     },
     async get_survey(iin) {
-        const url = `${API_URL}/api/survey/get/` + iin;
-        const response = await useAsyncData('getsurvey', async () => await $fetch(url, { method: 'GET', headers: getHeader() }));
+        console.log(iin);
+        const url = `${API_URL}/api/survey/get/` + 1;
+        console.log('url:', url);
+        const response = await useAsyncData('getsurv', async () => await $fetch(url, { method: 'GET', headers: getHeader() }));
+        // const response = await useFetch(url);
         return response;
     },
     async post_survey(requirements) {
