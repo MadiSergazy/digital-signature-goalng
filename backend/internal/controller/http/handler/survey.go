@@ -11,6 +11,7 @@ import (
 type SurveyService interface {
 	// Create(ctx context.Context, dto user.CreateDTO) (user.User, error)
 	Create(*survey.SurveyRequirements) (*survey.SurveyRequirements, error)
+	GetSurviesByUserID(user_id string, ctx *gin.Context) (response *survey.SurveyResponse, err error)
 	// GetAllRows()()
 }
 
@@ -31,8 +32,8 @@ func newSurveyHandler(deps surveyDeps) {
 
 	usersGroup := deps.router.Group("/survey")
 	{
-
 		usersGroup.POST("/create", handler.CreateSurvey)
+		usersGroup.GET("/get/:user_id", handler.GetSurveis)
 	}
 
 }
@@ -61,4 +62,13 @@ func (h surveyHandler) CreateSurvey(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"created_survey": resp})
 
+}
+
+func (h surveyHandler) GetSurveis(c *gin.Context) {
+	userID := c.Param("user_id")
+	respnose, err := h.surveyService.GetSurviesByUserID(userID, c)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+	c.JSON(http.StatusOK, respnose)
 }
