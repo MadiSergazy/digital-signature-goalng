@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,7 +12,7 @@ import (
 type SurveyService interface {
 	// Create(ctx context.Context, dto user.CreateDTO) (user.User, error)
 	Create(*survey.SurveyRequirements) (*survey.SurveyRequirements, error)
-	GetSurviesByUserID(user_id string, ctx *gin.Context) (response *survey.SurveyResponse, err error)
+	GetSurviesByUserID(user_id int, ctx *gin.Context) (response []*survey.SurveyResponse, err error)
 	// GetAllRows()()
 }
 
@@ -65,7 +66,7 @@ func (h surveyHandler) CreateSurvey(c *gin.Context) {
 }
 
 func (h surveyHandler) GetSurveis(c *gin.Context) {
-	userID := c.Param("user_id")
+	userID, err := strconv.Atoi(c.Param("user_id"))
 	respnose, err := h.surveyService.GetSurviesByUserID(userID, c)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)

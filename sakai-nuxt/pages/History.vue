@@ -77,7 +77,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useMainStore } from '../service/mainstore';
+// import { useMainStore } from '../service/mainstore';
 definePageMeta({
     layout: false
 });
@@ -116,27 +116,42 @@ const addQuestion = () => {
 };
 onMounted(async () => {
     chartData.value = setChartData();
-    const store = useMainStore();
-    var temp = await nuxtApp.$liftservice().get_survey(store.get_iin);
-    console.log('response:', temp);
+    // const store = useMainStore();
+    // store.set_iin(localStorage.getItem('iin'));
+    // console.log('HERE');
+    await init();
     // ProductService.getProductsMini().then((data) => (products.value = data));
     // products.value = [{ code: '19-00', name: 'name', inventoryStatus: 'АКТИВНО', questions: [{ description: 'Idk' }] }];
 });
-
+const init = async () => {
+    var temp = await nuxtApp.$liftservice().get_survey();
+    console.log('response:', temp);
+};
 const onRowEditSave = (event) => {
     let { newData, index } = event;
 
     products.value[index] = newData;
 };
 const currentDate = new Date();
-const saveProduct = () => {
+const saveProduct = async () => {
     // Get the current time components
-    const day = String(currentDate.getDate()).padStart(2, '0'); // Get day and pad with leading zero if needed
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed) and pad with leading zero if needed
-    const year = currentDate.getFullYear(); // Get full year
-
-    const formattedDate = `${day}.${month}.${year}`;
-    products.value.push({ name: product.name, code: formattedDate, inventoryStatus: 'АКТИВНО', questions: questions.value });
+    // const day = String(currentDate.getDate()).padStart(2, '0');
+    // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    // const year = currentDate.getFullYear();
+    //     type SurveyRequirements struct {
+    // 	ID         string     `json:"id,omitempty"`
+    // 	UserID     int        `json:"user_id,omitempty"`
+    // 	Name       string     `json:"name"`
+    // 	Rka        string     `json:"rka,omitempty"`
+    // 	RcName     string     `json:"rc_name,omitempty"`
+    // 	Adress     string     `json:"address,omitempty"`
+    // 	Questions  []Question `json:"questions"`
+    // 	CreateDate string     `json:"create_date,omitempty"`
+    // }
+    // const formattedDate = `${day}.${month}.${year}`;
+    // products.value.push({ name: product.name, code: formattedDate, inventoryStatus: 'АКТИВНО', questions: questions.value });
+    const response = await nuxtApp.$liftservice().post_survey({ questions: questions.value, name: product.name, user_id: 1 });
+    console.log('DATA:', response.data);
     hideDialog();
 };
 const getStatusLabel = (status) => {

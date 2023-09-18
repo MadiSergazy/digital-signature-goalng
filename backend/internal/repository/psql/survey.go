@@ -60,22 +60,27 @@ func (s SurveyrRepository) Create(req *survey.SurveyRequirements, ctx context.Co
 	return req, nil
 }
 
-func (s SurveyrRepository) GetSurviesByUserID(user_iin string, ctx *gin.Context) (response *survey.SurveyResponse, err error) {
-	query := "SELECT * FROM users WHERE iin = $1"
-	rows, err := s.db.Pool.Query(ctx, query, user_iin)
+func (s SurveyrRepository) GetSurviesByUserID(user_id int, ctx *gin.Context) (response []*survey.SurveyResponse, err error) {
+	query := "SELECT * FROM survey WHERE user_id = $1"
+	rows, err := s.db.Pool.Query(ctx, query, user_id)
 	if err != nil {
 		log.Fatalf("Error executing query: %v", err)
 		return nil, err
 	}
 	defer rows.Close()
-	var surveyResponse *survey.SurveyResponse
+	// var surveyResponse *survey.SurveyResponse
+	var surveis []*survey.SurveyResponse
+	surveyResponse := new(survey.SurveyResponse)
 	for rows.Next() {
 		// Scan the row into variables
 		if err := rows.Scan(&surveyResponse.ID, &surveyResponse.Name, &surveyResponse.Status, &surveyResponse.Rka, &surveyResponse.Rc_name, &surveyResponse.Adress, &surveyResponse.Question_id, &surveyResponse.CreatedAt, &surveyResponse.User_id); err != nil {
+			s.logger.Error("GetSurviesByUserID scanning err: ", zap.Error(err))
 			log.Fatalf("Error scanning row: %v", err)
 		}
+		surveis = append(surveis, surveyResponse)
 	}
-	return surveyResponse, nil
+	fmt.Println("surveyResponse:", surveis)
+	return surveis, nil
 }
 
 func (s SurveyrRepository) startTransaction(ctx context.Context) (pgx.Tx, error) {
