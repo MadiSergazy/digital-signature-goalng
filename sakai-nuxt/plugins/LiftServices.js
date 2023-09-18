@@ -16,8 +16,12 @@ const LiftService = {
         const url = `${API_URL}/api/survey/get/` + iin;
         const response = await useAsyncData('getsurvey', async () => await $fetch(url, { method: 'GET', headers: getHeader() }));
         return response;
+    },
+    async post_survey(requirements) {
+        const url = `${API_URL}/api/survey/create`;
+        const response = await useAsyncData('createproduct', async () => await $fetch(url, { method: 'POST', headers: getHeader(), body: requirements }));
+        return response;
     }
-    // async post_survey
 };
 export default defineNuxtPlugin((nuxtApp) => {
     // Doing something with nuxtApp
