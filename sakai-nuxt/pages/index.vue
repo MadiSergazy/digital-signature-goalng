@@ -1,8 +1,10 @@
 <template>
     <div></div>
 </template>
-<script>
-export default {};
+<script setup>
+definePageMeta({
+    layout: false
+});
 </script>
 <style></style>
 <!-- <script setup>

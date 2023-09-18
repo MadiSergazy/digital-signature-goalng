@@ -5,7 +5,7 @@
 -- Dumped from database version 15.1
 -- Dumped by pg_dump version 15.1
 
--- Started on 2023-09-15 11:38:30 +06
+-- Started on 2023-09-18 12:46:42 +06
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -289,7 +289,7 @@ SELECT pg_catalog.setval('public.user_question_id_seq', 1, false);
 SELECT pg_catalog.setval('public.users_id_seq', 5, true);
 
 
--- Completed on 2023-09-15 11:38:30 +06
+-- Completed on 2023-09-18 12:46:42 +06
 
 --
 -- PostgreSQL database dump complete
