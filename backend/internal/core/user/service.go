@@ -17,6 +17,7 @@ import (
 // Repository is a user repository.
 type Repository interface {
 	Create(ctx context.Context, dto *User) (*User, error)
+	CheckIfUserExistsByIIN(ctx context.Context, iin string) (bool, error)
 }
 
 // Service is a user service interface.
@@ -55,16 +56,17 @@ func (s Service) Login(requirements model.LoginRequirements) (*User, error) {
 	fmt.Println(response)
 	iin := (response.UserID)[3:]
 	user := &User{Username: getName(response.Subject), IIN: &iin, Email: &response.Email, BIN: &response.BusinessID, Is_manager: requirements.Is_manager}
-	fmt.Println("email:", *user.Email)
-	fmt.Println("IIN:", *user.IIN)
-	fmt.Println("BIN:", *user.BIN)
-	// fmt.Println("Name:", *getName(response.Subject))
-	s.userRepository.Create(ctx, user)
+	exist, err := s.userRepository.CheckIfUserExistsByIIN(ctx, *user.IIN)
+	if err != nil {
+		return nil, err
+	}
+	if !exist {
+		s.userRepository.Create(ctx, user)
+	}
 	return user, nil
 }
 
 func authentification(request model.AuthRequest) (*model.AuthResponse, error) {
-
 	requestData, err := json.Marshal(request)
 	if err != nil {
 		return nil, err

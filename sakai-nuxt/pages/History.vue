@@ -77,16 +77,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { ProductService } from '@/service/ProductService';
+import { useMainStore } from '../service/mainstore';
 definePageMeta({
     layout: false
 });
 const confirmDeleteSelected = () => {
     console.log('selectedProduct:', selectedProducts.value);
-    // products.value.filter((val) => val.name != selectedProducts.value[0].name);
-    // selectedProducts.value.forEach(element => {
-    //     element.
-    // });
     for (var i = 0; i < selectedProducts.value.length; i++) {
         products.value[products.value.findIndex((val) => val.name == selectedProducts.value[i].name)].inventoryStatus = 'НЕАКТИВНО';
     }
@@ -109,6 +105,7 @@ const selectedProducts = ref();
 const productDialog = ref(false);
 const products = ref([]);
 const editingRows = ref([]);
+const nuxtApp = useNuxtApp();
 const statuses = ref([
     { label: 'In Stock', value: 'АКТИВНО' },
     { label: 'Low Stock', value: 'НЕАКТИВНО' },
@@ -117,9 +114,11 @@ const statuses = ref([
 const addQuestion = () => {
     questions.value.push({ description: '' });
 };
-onMounted(() => {
+onMounted(async () => {
     chartData.value = setChartData();
-
+    const store = useMainStore();
+    var temp = await nuxtApp.$liftservice().get_survey(store.get_iin);
+    console.log('response:', temp);
     // ProductService.getProductsMini().then((data) => (products.value = data));
     // products.value = [{ code: '19-00', name: 'name', inventoryStatus: 'АКТИВНО', questions: [{ description: 'Idk' }] }];
 });
