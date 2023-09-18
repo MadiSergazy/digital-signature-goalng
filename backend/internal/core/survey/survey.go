@@ -1,9 +1,14 @@
 package survey
 
+import (
+	"context"
+	"time"
+)
+
 // Repository is a user repository.
 type Repository interface {
 	// Create(*survey.SurveyRequirements) (*survey.SurveyRequirements, error)
-	Create(*SurveyRequirements) (*SurveyRequirements, error)
+	Create(*SurveyRequirements, context.Context) (*SurveyRequirements, error)
 }
 
 // Service is a user service interface.
@@ -23,8 +28,10 @@ func (s Service) Create(requirements *SurveyRequirements) (*SurveyRequirements, 
 	if err := s.ValidateSurveyRequirements(requirements); err != nil {
 		return nil, err
 	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	return s.surveyRepository.Create(requirements)
+	return s.surveyRepository.Create(requirements, ctx)
 }
 
 func (s Service) ValidateSurveyRequirements(requirements *SurveyRequirements) error {
