@@ -1,6 +1,8 @@
 package core
 
 import (
+	"go.uber.org/zap"
+
 	"mado/internal/core/survey"
 	"mado/internal/core/user"
 	"mado/internal/repository/psql"
@@ -13,9 +15,9 @@ type Services struct {
 }
 
 // NewServices returns a new instance of Services.
-func NewServices(repositories psql.Repositories) Services {
+func NewServices(repositories psql.Repositories, logger *zap.Logger) Services {
 	return Services{
-		User:   user.NewService(repositories.User),
-		Survey: survey.NewService(repositories.Survey),
+		User:   user.NewService(repositories.User, logger),
+		Survey: survey.NewService(repositories.Survey, logger),
 	}
 }

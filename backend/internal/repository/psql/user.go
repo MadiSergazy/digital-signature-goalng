@@ -14,13 +14,15 @@ import (
 
 // UserRepository is a user repository.
 type UserRepository struct {
-	db *postgres.Postgres
+	db     *postgres.Postgres
+	logger *zap.Logger
 }
 
 // NewUserRepository creates a new UserRepository.
-func NewUserRepository(db *postgres.Postgres) UserRepository {
+func NewUserRepository(db *postgres.Postgres, logger *zap.Logger) UserRepository {
 	return UserRepository{
-		db: db,
+		db:     db,
+		logger: logger,
 	}
 }
 

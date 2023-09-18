@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"time"
 
+	"go.uber.org/zap"
+
 	// "mado/internal"
 	"mado/internal/auth"
 	"mado/internal/auth/model"
@@ -23,6 +25,7 @@ type Repository interface {
 // Service is a user service interface.
 type Service struct {
 	userRepository Repository
+	logger         *zap.Logger
 }
 
 const (
@@ -31,9 +34,10 @@ const (
 )
 
 // NewService creates a new user service.
-func NewService(userRepository Repository) Service {
+func NewService(userRepository Repository, logger *zap.Logger) Service {
 	return Service{
 		userRepository: userRepository,
+		logger:         logger,
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // Repository is a user repository.
@@ -17,12 +18,14 @@ type Repository interface {
 // Service is a user service interface.
 type Service struct {
 	surveyRepository Repository
+	logger           *zap.Logger
 }
 
 // NewService creates a new user service.
-func NewService(surveyRepository Repository) Service {
+func NewService(surveyRepository Repository, logger *zap.Logger) Service {
 	return Service{
 		surveyRepository: surveyRepository,
+		logger:           logger,
 	}
 }
 

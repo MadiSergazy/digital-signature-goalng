@@ -15,7 +15,7 @@ type Repositories struct {
 // NewRepositories returns a new instance of Repositories.
 func NewRepositories(db *postgres.Postgres, logger *zap.Logger) Repositories {
 	return Repositories{
-		User:   NewUserRepository(db),
+		User:   NewUserRepository(db, logger),
 		Survey: NewSurveyrRepository(db, logger),
 	}
 }
