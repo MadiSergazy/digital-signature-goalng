@@ -2,13 +2,13 @@ package psql
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"go.uber.org/zap"
 
 	"mado/internal/core/user"
 	"mado/pkg/database/postgres"
+	"mado/pkg/errs"
 	"mado/pkg/logger"
 )
 
@@ -26,13 +26,11 @@ func NewUserRepository(db *postgres.Postgres, logger *zap.Logger) UserRepository
 	}
 }
 
-var errInsert = errors.New("can not insert user: ")
-
 func (ur UserRepository) CheckIfUserExistsByIIN(ctx context.Context, iin string) (bool, error) {
 	// Ensure you have a valid database connection
 	if ur.db == nil {
-		fmt.Println("database connection is nil")
-		return false, errors.New("database connection is nil")
+		ur.logger.Error(errs.ErrDBConnectionIsNill.Error())
+		return false, errs.ErrDBConnectionIsNill
 	}
 
 	// Prepare the SQL statement to count the number of users with the given iin
@@ -45,7 +43,7 @@ func (ur UserRepository) CheckIfUserExistsByIIN(ctx context.Context, iin string)
 	var count int
 	err := ur.db.Pool.QueryRow(ctx, sqlStatement, iin).Scan(&count)
 	if err != nil {
-		fmt.Println("error executing SQL statement")
+		ur.logger.Error(errs.ErrGettingUsersCount.Error(), zap.Error(err))
 		return false, fmt.Errorf("%w", err)
 	}
 
@@ -58,9 +56,8 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 
 	// Ensure you have a valid database connection
 	if ur.db == nil {
-
-		fmt.Println("database connection is nil")
-		return nil, errors.New("database connection is nil")
+		ur.logger.Error(errs.ErrDBConnectionIsNill.Error())
+		return nil, errs.ErrDBConnectionIsNill
 	}
 
 	// Prepare the SQL statement
@@ -73,14 +70,14 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 	// Execute the SQL statement
 	result, err := ur.db.Pool.Exec(ctx, sqlStatement, dto.IIN, dto.Email, dto.BIN, dto.Username, false)
 	if err != nil {
-		fmt.Println("error executing sql statement")
-		return nil, fmt.Errorf("%w%w", errInsert, err)
+		ur.logger.Error(errs.ErrInsertingUser.Error(), zap.Error(err))
+		return nil, fmt.Errorf("%w%w", errs.ErrInsertUser, err)
 	}
 
 	// Check the number of rows affected (usually for error checking)
 	rowsAffected := result.RowsAffected()
 	if rowsAffected != 1 {
-		fmt.Println("number of rows affected err")
+		ur.logger.Error(errs.ErrRowsAffected.Error())
 		return nil, fmt.Errorf("expected 1 row to be affected, but %d rows were affected", rowsAffected)
 	}
 
@@ -92,7 +89,8 @@ func (ur UserRepository) Create(ctx context.Context, dto *user.User) (*user.User
 
 func (ur UserRepository) GetAllRows(ctx context.Context) ([]*user.User, error) {
 	if ur.db == nil {
-		return nil, errors.New("database connection is nil")
+		ur.logger.Error(errs.ErrDBConnectionIsNill.Error())
+		return nil, errs.ErrDBConnectionIsNill
 	}
 
 	// Prepare the SQL statement
@@ -101,6 +99,7 @@ func (ur UserRepository) GetAllRows(ctx context.Context) ([]*user.User, error) {
 	// Execute the SQL statement and retrieve the result set
 	rows, err := ur.db.Pool.Query(ctx, sqlStatement)
 	if err != nil {
+		ur.logger.Error(errs.ErrGetAllRows.Error(), zap.Error(err))
 		return nil, err
 	}
 	defer rows.Close()
@@ -111,6 +110,7 @@ func (ur UserRepository) GetAllRows(ctx context.Context) ([]*user.User, error) {
 	for rows.Next() {
 		var u user.User
 		if err := rows.Scan(&u.ID, &u.Username, &u.Email, &u.BIN, &u.Email); err != nil {
+			ur.logger.Error(errs.ErrGetAllRows.Error(), zap.Error(err))
 			return nil, err
 		}
 		users = append(users, &u)
@@ -118,6 +118,7 @@ func (ur UserRepository) GetAllRows(ctx context.Context) ([]*user.User, error) {
 
 	// Check for errors during iteration
 	if err := rows.Err(); err != nil {
+		ur.logger.Error(errs.ErrGetAllRows.Error(), zap.Error(err))
 		return nil, err
 	}
 

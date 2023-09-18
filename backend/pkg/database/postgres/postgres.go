@@ -47,7 +47,7 @@ func New(ctx context.Context, connectionConfig ConnectionConfig, opts ...Option)
 
 	dsn := connectionConfig.getDSN()
 	fmt.Println("DSN: ", dsn)
-	ctx, cancel := context.WithTimeout(context.Background(), defaultConnTimeout)
+	ctx, cancel := context.WithTimeout(ctx, defaultConnTimeout)
 	defer cancel()
 
 	dbpool, err := pgxpool.New(ctx, dsn)
