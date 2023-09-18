@@ -1,17 +1,12 @@
 package psql
 
 import (
-
-	"log"
-	"mado/internal/core/survey"
-	"mado/pkg/database/postgres"
-
-	"github.com/gin-gonic/gin"
-
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
@@ -20,7 +15,6 @@ import (
 	"mado/internal/core/survey"
 	"mado/pkg/database/postgres"
 	"mado/pkg/logger"
-
 )
 
 // Survey is a Survey repository.
@@ -65,7 +59,6 @@ func (s SurveyrRepository) Create(req *survey.SurveyRequirements, ctx context.Co
 	return req, nil
 }
 
-
 func (s SurveyrRepository) GetSurviesByUserID(user_iin string, ctx *gin.Context) (response *survey.SurveyResponse, err error) {
 	query := "SELECT * FROM survey WHERE iin = $1"
 	rows, err := s.db.Pool.Query(ctx, query, user_iin)
@@ -82,6 +75,7 @@ func (s SurveyrRepository) GetSurviesByUserID(user_iin string, ctx *gin.Context)
 		}
 	}
 	return surveyResponse, nil
+}
 
 func (s SurveyrRepository) startTransaction(ctx context.Context) (pgx.Tx, error) {
 	tx, err := s.db.Pool.BeginTx(ctx, pgx.TxOptions{

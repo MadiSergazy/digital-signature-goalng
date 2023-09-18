@@ -1,16 +1,16 @@
 package survey
 
-
 import (
 	"context"
 	"time"
-  "github.com/gin-gonic/gin"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Repository is a user repository.
 type Repository interface {
 	// Create(*survey.SurveyRequirements) (*survey.SurveyRequirements, error)
-	Create(*SurveyRequirements) (*SurveyRequirements, error)
+	Create(*SurveyRequirements, context.Context) (*SurveyRequirements, error)
 	GetSurviesByUserID(user_id string, ctx *gin.Context) (response *SurveyResponse, err error)
 }
 
