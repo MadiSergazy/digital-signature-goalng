@@ -17,33 +17,40 @@ import (
 
 // Survey is a Survey repository.
 type SurveyrRepository struct {
-	db *postgres.Postgres
+	db     *postgres.Postgres
+	logger *zap.Logger
 }
 
 // NewSurveyRepository creates a new UserRepository.
-func NewSurveyrRepository(db *postgres.Postgres) SurveyrRepository {
+func NewSurveyrRepository(db *postgres.Postgres, logger *zap.Logger) SurveyrRepository {
 	return SurveyrRepository{
-		db: db,
+		db:     db,
+		logger: logger,
 	}
 }
 
 func (s SurveyrRepository) Create(req *survey.SurveyRequirements, ctx context.Context) (*survey.SurveyRequirements, error) {
 	tx, err := s.startTransaction(ctx)
 	if err != nil {
+		s.logger.Error("error in starting transaction: ", zap.Error(err))
 		return nil, err
 	}
+
 	defer s.rollbackIfError(tx, ctx, &err)
 
 	questionIDs, err := s.insertQuestions(tx, ctx, req.Questions)
 	if err != nil {
+		s.logger.Error("error in inserting questions for survey: ", zap.Error(err))
 		return nil, err
 	}
 
 	if err := s.insertSurvey(tx, ctx, req, questionIDs); err != nil {
+		s.logger.Error("error in inserting survey: ", zap.Error(err))
 		return nil, err
 	}
 
 	if err := s.commitTransaction(tx, ctx); err != nil {
+		s.logger.Error("error in commiting transaction: ", zap.Error(err))
 		return nil, err
 	}
 
@@ -84,6 +91,7 @@ func (s SurveyrRepository) insertQuestions(tx pgx.Tx, ctx context.Context, quest
 }
 
 func (s SurveyrRepository) insertSurvey(tx pgx.Tx, ctx context.Context, req *survey.SurveyRequirements, questionIDs []int) error {
+	//todo instead of mocks use request's value
 	mockRka := "Mock Rka Value"
 	mockRcName := "Mock RcName Value"
 	mockAdress := "Mock Address Value"

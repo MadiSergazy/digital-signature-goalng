@@ -51,7 +51,7 @@ func New(ctx context.Context, logger *zap.Logger) (App, error) {
 	// 	return App{}, fmt.Errorf("failed to create token maker: %w", err)
 	// }
 
-	repositories := psql.NewRepositories(postgresInstance)
+	repositories := psql.NewRepositories(postgresInstance, logger)
 	services := core.NewServices(repositories)
 
 	router := httphandler.NewRouter(httphandler.Deps{
