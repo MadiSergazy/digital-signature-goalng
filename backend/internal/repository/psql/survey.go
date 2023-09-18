@@ -2,6 +2,7 @@ package psql
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -107,6 +108,14 @@ func (s SurveyrRepository) insertQuestions(tx pgx.Tx, ctx context.Context, quest
 		}
 		questionIDs = append(questionIDs, questionID)
 	}
+	//todo delete this
+	// Convert questionIDs to a JSON array string
+	questionIDsJSON, err := json.Marshal(questionIDs)
+	if err != nil {
+		return nil, fmt.Errorf("could not marshal question IDs: %w", err)
+	}
+
+	s.logger.Info("Questions of survey", zap.String("question_ids", string(questionIDsJSON)))
 	return questionIDs, nil
 }
 
@@ -125,6 +134,14 @@ func (s SurveyrRepository) insertSurvey(tx pgx.Tx, ctx context.Context, req *sur
 	if err != nil {
 		return fmt.Errorf("can not build insert survey query: %w", err)
 	}
+
+	//todo maybe del it
+	// Convert args to a JSON string
+	argsJSON, err := json.Marshal(args)
+	if err != nil {
+		return fmt.Errorf("can not marshal args: %w", err)
+	}
+	s.logger.Info("InsertSurvey query", zap.String("sql", sqlQuery), zap.String("args", string(argsJSON)))
 
 	logger.FromContext(ctx).Debug("check following query", zap.String("sql", sqlQuery), zap.Any("args", args))
 
