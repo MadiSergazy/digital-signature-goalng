@@ -61,7 +61,7 @@ func (s SurveyrRepository) Create(req *survey.SurveyRequirements, ctx context.Co
 }
 
 func (s SurveyrRepository) GetSurviesByUserID(user_iin string, ctx *gin.Context) (response *survey.SurveyResponse, err error) {
-	query := "SELECT * FROM survey WHERE iin = $1"
+	query := "SELECT * FROM users WHERE iin = $1"
 	rows, err := s.db.Pool.Query(ctx, query, user_iin)
 	if err != nil {
 		log.Fatalf("Error executing query: %v", err)
