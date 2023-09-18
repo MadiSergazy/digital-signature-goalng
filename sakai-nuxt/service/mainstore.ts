@@ -6,6 +6,7 @@ export const useMainStore = defineStore('main', {
         iin: null,
         bin: null,
         username: null,
+        user_id: null,
         is_manager: null,
         istopbarvisible: true
     }),
@@ -16,7 +17,8 @@ export const useMainStore = defineStore('main', {
         get_iin: (state) => state.iin,
         get_bin: (state) => state.bin,
         get_username: (state) => state.username,
-        get_is_manager: (state) => state.is_manager
+        get_is_manager: (state) => state.is_manager,
+        get_user_id: (state) => state.user_id
     },
     // optional actions
     actions: {
@@ -37,6 +39,9 @@ export const useMainStore = defineStore('main', {
         },
         set_bin(new_bin: string) {
             this.bin = new_bin;
+        },
+        set_user_id(new_user_id) {
+            this.user_id = new_user_id;
         }
     }
 });
