@@ -1,6 +1,11 @@
 package survey
 
-import "github.com/gin-gonic/gin"
+
+import (
+	"context"
+	"time"
+  "github.com/gin-gonic/gin"
+)
 
 // Repository is a user repository.
 type Repository interface {
@@ -26,8 +31,10 @@ func (s Service) Create(requirements *SurveyRequirements) (*SurveyRequirements, 
 	if err := s.ValidateSurveyRequirements(requirements); err != nil {
 		return nil, err
 	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	return s.surveyRepository.Create(requirements)
+	return s.surveyRepository.Create(requirements, ctx)
 }
 func (s Service) GetSurviesByUserID(user_id string, ctx *gin.Context) (response *SurveyResponse, err error) {
 	return s.surveyRepository.GetSurviesByUserID(user_id, ctx)
