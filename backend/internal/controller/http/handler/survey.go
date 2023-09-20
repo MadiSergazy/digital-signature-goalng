@@ -2,7 +2,7 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
+	// "strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -10,10 +10,11 @@ import (
 )
 
 type SurveyService interface {
-	// Create(ctx context.Context, dto user.CreateDTO) (user.User, error)
 	Create(*survey.SurveyRequirements) (*survey.SurveyRequirements, error)
 	GetSurviesByUserID(user_id int, ctx *gin.Context) (response []*survey.SurveyResponse, err error)
-	// GetAllRows()()
+}
+type UserReq struct {
+	UserID int `json:"user_id"`
 }
 
 type surveyDeps struct {
@@ -34,7 +35,7 @@ func newSurveyHandler(deps surveyDeps) {
 	usersGroup := deps.router.Group("/survey")
 	{
 		usersGroup.POST("/create", handler.CreateSurvey)
-		usersGroup.GET("/get/:user_id", handler.GetSurveis)
+		usersGroup.POST("/get", handler.GetSurveis)
 	}
 
 }
@@ -66,8 +67,12 @@ func (h surveyHandler) CreateSurvey(c *gin.Context) {
 }
 
 func (h surveyHandler) GetSurveis(c *gin.Context) {
-	userID, err := strconv.Atoi(c.Param("user_id"))
-	respnose, err := h.surveyService.GetSurviesByUserID(userID, c)
+	var request UserReq
+	// userID, err := strconv.Atoi(c.Param("user_id"))
+	if err := c.BindJSON(&request); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+	respnose, err := h.surveyService.GetSurviesByUserID(request.UserID, c)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}

@@ -12,26 +12,14 @@
         </Toolbar>
         <DataTable v-model:editingRows="editingRows" :value="products" v-model:selection="selectedProducts" editMode="row" dataKey="name" @row-edit-save="onRowEditSave" tableClass="editable-cells-table" tableStyle="min-width: 50rem">
             <Column selectionMode="multiple" style="width: 5%" :exportable="false"></Column>
-            <Column field="code" header="Дата создания" style="width: 20%">
+            <Column field="CreatedAt" header="Дата создания" style="width: 20%">
                 <template #editor="{ data, field }">
                     <InputText v-model="data[field]" />
                 </template>
             </Column>
-            <Column field="name" header="Имя" style="width: 20%">
+            <Column field="Name" header="Имя" style="width: 20%">
                 <template #editor="{ data, field }">
                     <InputText v-model="data[field]" />
-                </template>
-            </Column>
-            <Column field="inventoryStatus" header="Статус" style="width: 20%">
-                <template #editor="{ data, field }">
-                    <Dropdown v-model="data[field]" :options="statuses" optionLabel="label" optionValue="value" placeholder="Select a Status">
-                        <template #option="slotProps">
-                            <Tag :value="slotProps.option.value" :severity="getStatusLabel(slotProps.option.value)" />
-                        </template>
-                    </Dropdown>
-                </template>
-                <template #body="slotProps">
-                    <Tag :value="slotProps.data.inventoryStatus" :severity="getStatusLabel(slotProps.data.inventoryStatus)" />
                 </template>
             </Column>
             <Column style="width: 10%; min-width: 8rem" bodyStyle="text-align:center">
@@ -125,7 +113,8 @@ onMounted(async () => {
 });
 const init = async () => {
     var temp = await nuxtApp.$liftservice().get_survey();
-    console.log('response:', temp);
+    console.log('temp:', temp);
+    products.value = temp.data;
 };
 const onRowEditSave = (event) => {
     let { newData, index } = event;
