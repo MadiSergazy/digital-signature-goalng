@@ -1,0 +1,71 @@
+package petition_test
+
+import (
+	"context"
+	"os"
+	"testing"
+
+	"go.uber.org/zap"
+
+	"mado/internal/core/petition"
+)
+
+// Mock repository for testing
+type mockRepository struct{}
+
+func (m *mockRepository) Save(ctx context.Context, dto *petition.PetitionData) (*petition.PetitionData, error) {
+	return dto, nil
+}
+
+func TestGeneratePetitionPDF(t *testing.T) {
+	// Create a mock repository for testing
+	mockRepo := &mockRepository{}
+
+	// Create a mock logger for testing
+	mockLogger, _ := zap.NewDevelopment()
+
+	// Create a new service using the mock repository and logger
+	service := petition.NewService(mockRepo, mockLogger)
+
+	// Create test data
+	testData := &petition.PetitionData{
+		SheetNumber:       "123",
+		CreationDate:      "01 September 2023",
+		Location:          "Apartment Building 123",
+		ResponsiblePerson: "John Doe",
+		Questions: []petition.Question{
+			{Number: 1, Text: "Should we repaint the common areas?", Decision: "За"},
+			{Number: 2, Text: "Should we install security cameras?", Decision: "Воздержусь"},
+			{Number: 3, Text: "Should we increase the maintenance fee?", Decision: "Против"},
+		},
+		OwnerName:    "Alice Smith",
+		OwnerAddress: "vfv4d6515",
+	}
+
+	// Call the function being tested
+	err := service.GeneratePetitionPDF(testData)
+	if err != nil {
+		t.Errorf("Error generating PDF: %v", err)
+	}
+
+	// Check if the PDF file was created
+	_, err = os.Stat("output.pdf")
+	if os.IsNotExist(err) {
+		t.Error("PDF file was not created")
+	}
+
+	// Clean up: remove the generated PDF file
+	err = os.Remove("output.pdf")
+	if err != nil {
+		t.Errorf("Error deleting PDF file: %v", err)
+	}
+
+	err = os.Remove("temp.html")
+	if err != nil {
+		t.Errorf("Error deleting html file: %v", err)
+	}
+}
+
+func NewService(mockRepo *mockRepository, mockLogger *zap.Logger) {
+	panic("unimplemented")
+}
