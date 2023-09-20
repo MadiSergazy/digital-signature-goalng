@@ -10,6 +10,8 @@ require (
 	go.uber.org/zap v1.25.0
 )
 
+require github.com/andybalholm/cascadia v1.3.1 // indirect
+
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -47,9 +49,12 @@ require (
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
+	github.com/PuerkitoBio/goquery v1.8.1
+	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.9.1
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jackc/pgconn v1.14.1
 	github.com/jackc/pgerrcode v0.0.0-20220416144525-469b46aa5efa
+	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

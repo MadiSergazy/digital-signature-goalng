@@ -13,6 +13,12 @@ import (
 // Mock repository for testing
 type mockRepository struct{}
 
+// GetNextID implements petition.Repository.
+func (*mockRepository) GetNextID(ctx context.Context) (*int, error) {
+	id := 123
+	return &id, nil
+}
+
 func (m *mockRepository) Save(ctx context.Context, dto *petition.PetitionData) (*petition.PetitionData, error) {
 	return dto, nil
 }
@@ -28,8 +34,10 @@ func TestGeneratePetitionPDF(t *testing.T) {
 	service := petition.NewService(mockRepo, mockLogger)
 
 	// Create test data
+	// id := 123
 	testData := &petition.PetitionData{
-		SheetNumber:       "123",
+		FileName: "output.pdf",
+		// SheetNumber:       &id,
 		CreationDate:      "01 September 2023",
 		Location:          "Apartment Building 123",
 		ResponsiblePerson: "John Doe",
@@ -43,7 +51,7 @@ func TestGeneratePetitionPDF(t *testing.T) {
 	}
 
 	// Call the function being tested
-	err := service.GeneratePetitionPDF(testData)
+	_, err := service.GeneratePetitionPDF(testData)
 	if err != nil {
 		t.Errorf("Error generating PDF: %v", err)
 	}

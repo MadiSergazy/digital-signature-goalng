@@ -2,20 +2,22 @@ package petition
 
 // Define a struct to hold the data
 type PetitionData struct {
-	SheetNumber       string
-	CreationDate      string
-	Location          string
-	ResponsiblePerson string
-	Questions         []Question
-	OwnerName         string
-	OwnerAddress      string
+	FileName          string     `json:"file_name`
+	SheetNumber       *int       `json:"sheet_number"` //get it from potsgreSQL
+	CreationDate      string     `json:"creation_date"`
+	Location          string     `json:"location"`
+	ResponsiblePerson string     `json:"responsible_person"`
+	Questions         []Question `json:"questions"`
+	OwnerName         string     `json:"owner_name"`
+	OwnerAddress      string     `json:"owner_address"`
+	PdfData           []byte     `json:"pdf_data"` //maybe we did't send it to front
 }
 
 // Define a struct to represent each question
 type Question struct {
-	Number   int
-	Text     string
-	Decision string // For, Abstain, Against
+	Number   int    `json:"number"`
+	Text     string `json:"text"`
+	Decision string `json:"description"` // For, Abstain, Against За Воздержусь, Против
 }
 
 const TemplateHTML = `<!DOCTYPE html>
