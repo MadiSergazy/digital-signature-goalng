@@ -57,13 +57,13 @@ func TestGeneratePetitionPDF(t *testing.T) {
 	}
 
 	// Check if the PDF file was created
-	_, err = os.Stat("output.pdf")
+	_, err = os.Stat(testData.FileName)
 	if os.IsNotExist(err) {
 		t.Error("PDF file was not created")
 	}
 
 	// Clean up: remove the generated PDF file
-	err = os.Remove("output.pdf")
+	err = os.Remove(testData.FileName)
 	if err != nil {
 		t.Errorf("Error deleting PDF file: %v", err)
 	}

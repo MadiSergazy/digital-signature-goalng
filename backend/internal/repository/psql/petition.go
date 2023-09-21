@@ -26,9 +26,9 @@ func NewPetitionRepository(db *postgres.Postgres, logger *zap.Logger) SurveyrRep
 func (p PetitionRepository) Save(ctx context.Context, dto *petition.PetitionData) (*petition.PetitionData, error) {
 	// Insert the PDF data into the database
 	_, err := p.db.Pool.Exec(ctx, `
-	  INSERT INTO pdf_files (file_name, file_data, created_at)
-	  VALUES ($1, $2, $3, NOW())`,
-		dto.FileName, dto.PdfData)
+	  INSERT INTO petition_pdf_files (file_name, file_data, creation_date)
+	  VALUES ($1, $2, $3)`,
+		dto.FileName, dto.PdfData, dto.CreationDate)
 	if err != nil {
 		p.logger.Error("Failed to insert PDF data into the database: ", zap.Error(err))
 		return nil, err

@@ -15,3 +15,6 @@ down:
 
 up:
 	docker-compose up 
+
+# before running don't forgot that we need to stop the PostgreSQL
+# sudo service postgresql stop
