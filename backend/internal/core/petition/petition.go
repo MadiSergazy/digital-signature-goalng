@@ -10,11 +10,14 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"go.uber.org/zap"
+
+	"mado/pkg/validator"
 )
 
 type Repository interface {
 	Save(ctx context.Context, dto *PetitionData) (*PetitionData, error)
 	GetNextID(ctx context.Context) (*int, error)
+	GetPetitionPdfByID(ctx context.Context, pdfID *int) (*PetitionData, error)
 }
 
 // Service is a user service interface.
@@ -36,6 +39,10 @@ func (s *Service) GeneratePetitionPDF(data *PetitionData) (*PetitionData, error)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
+
+	currentTime := time.Now()
+	// Format the date as "21.09.2023"
+	data.CreationDate = currentTime.Format("02.01.2006")
 
 	var err error
 	data.SheetNumber, err = s.petitionRepository.GetNextID(ctx)
@@ -103,6 +110,17 @@ func (s *Service) GeneratePetitionPDF(data *PetitionData) (*PetitionData, error)
 		s.logger.Error("Failed to read PDF file: ", zap.Error(err))
 		return nil, err
 	}
-	return nil, nil
-	// return s.petitionRepository.Save(ctx, data)
+	// return nil, nil
+	return s.petitionRepository.Save(ctx, data)
+}
+
+func (s Service) GetPetitionPdfByID(id string) (*PetitionData, error) {
+	docId, err := validator.IdValidator(id)
+	if err != nil {
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return s.petitionRepository.GetPetitionPdfByID(ctx, docId)
 }

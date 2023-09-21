@@ -13,6 +13,11 @@ import (
 // Mock repository for testing
 type mockRepository struct{}
 
+// GetPetitionPdfByID implements petition.Repository.
+func (*mockRepository) GetPetitionPdfByID(ctx context.Context, pdfID *int) (*petition.PetitionData, error) {
+	return &petition.PetitionData{PdfData: []byte("vfdvfd"), FileName: "file1.pdf"}, nil
+}
+
 // GetNextID implements petition.Repository.
 func (*mockRepository) GetNextID(ctx context.Context) (*int, error) {
 	id := 123
@@ -24,6 +29,7 @@ func (m *mockRepository) Save(ctx context.Context, dto *petition.PetitionData) (
 }
 
 func TestGeneratePetitionPDF(t *testing.T) {
+
 	// Create a mock repository for testing
 	mockRepo := &mockRepository{}
 
@@ -38,7 +44,7 @@ func TestGeneratePetitionPDF(t *testing.T) {
 	testData := &petition.PetitionData{
 		FileName: "output.pdf",
 		// SheetNumber:       &id,
-		CreationDate:      "01 September 2023",
+		// CreationDate:      "01 September 2023",
 		Location:          "Apartment Building 123",
 		ResponsiblePerson: "John Doe",
 		Questions: []petition.Question{
@@ -63,10 +69,10 @@ func TestGeneratePetitionPDF(t *testing.T) {
 	}
 
 	// Clean up: remove the generated PDF file
-	err = os.Remove(testData.FileName)
-	if err != nil {
-		t.Errorf("Error deleting PDF file: %v", err)
-	}
+	// err = os.Remove(testData.FileName)
+	// if err != nil {
+	// 	t.Errorf("Error deleting PDF file: %v", err)
+	// }
 
 	err = os.Remove("temp.html")
 	if err != nil {

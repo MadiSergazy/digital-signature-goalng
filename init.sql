@@ -190,6 +190,18 @@ ALTER TABLE public.users ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
     CACHE 1
 );
 
+CREATE TABLE petition_pdf_files (
+    id serial PRIMARY KEY,
+    file_name varchar(255) NOT NULL,
+    sheet_number integer,
+    creation_date timestamp,
+    location varchar(255),
+    responsible_person varchar(255),
+    owner_name varchar(255),
+    owner_address varchar(255),
+    pdf_data bytea NOT NULL
+);
+
 
 --
 -- TOC entry 3633 (class 0 OID 19553)

@@ -67,6 +67,7 @@ func (h surveyHandler) CreateSurvey(c *gin.Context) {
 
 func (h surveyHandler) GetSurveis(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("user_id"))
+
 	respnose, err := h.surveyService.GetSurviesByUserID(userID, c)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)

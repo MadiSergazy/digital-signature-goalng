@@ -9,4 +9,6 @@ var (
 	ErrGetAllRows         = errors.New("can not get count of users")
 	ErrInsertingUser      = errors.New("can not insert user")
 	ErrRowsAffected       = errors.New("number of affected row have to be 1")
+	ErrInvalidID          = errors.New("id is not valid")
+	ErrPdfFileNotFound    = errors.New("PDF file not found")
 )

@@ -3,14 +3,14 @@ package petition
 // Define a struct to hold the data
 type PetitionData struct {
 	FileName          string     `json:"file_name`
-	SheetNumber       *int       `json:"sheet_number"` //get it from potsgreSQL
-	CreationDate      string     `json:"creation_date"`
+	SheetNumber       *int       `json:"sheet_number"`  //get it from potsgreSQL
+	CreationDate      string     `json:"creation_date"` //getted from back
 	Location          string     `json:"location"`
 	ResponsiblePerson string     `json:"responsible_person"`
 	Questions         []Question `json:"questions"`
 	OwnerName         string     `json:"owner_name"`
 	OwnerAddress      string     `json:"owner_address"`
-	PdfData           []byte     `json:"pdf_data"` //maybe we did't send it to front
+	PdfData           []byte     `json:"pdf_data"` //we did't get it from frontend we give it in backend
 }
 
 // Define a struct to represent each question
@@ -107,3 +107,107 @@ const TemplateHTML = `<!DOCTYPE html>
 </body>
 
 </html>`
+
+/*
+const TemplateHTMLOptimized = `<!DOCTYPE html>
+<html lang="ru,en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 11px;
+            color: #000;
+            line-height: 100%;
+            margin: 0;
+            background: transparent;
+        }
+
+        p {
+            text-align: left;
+            margin: 0;
+        }
+
+        .center {
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .strong {
+            font-weight: bold;
+        }
+
+        .indent {
+            margin-left: 0.57in;
+        }
+
+        .table {
+            border-collapse: collapse;
+            width: 500pt;
+            margin: 0 auto;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 0.03in;
+            text-align: left;
+        }
+
+        .checkbox {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="center strong">Приложение 3</p>
+    <p class="center">к Правилам принятия решений по управлению объектом кондоминиума и содержанию общего имущества объекта кондоминиума</p>
+    <p class="center strong">Лист № <u>{{.SheetNumber}}</u></p>
+    <p class="center strong">голосования при проведении письменного опроса собственников квартир, нежилых помещений</p>
+    <br>
+    <p class="indent strong">&laquo;__&raquo; {{.CreationDate}} года</p>
+    <br>
+    <p class="indent strong">время <u>__</u></p>
+    <p>Местонахождение многоквартирного жилого дома: {{.Location}}</p>
+    <p>Ответственные лица: {{.ResponsiblePerson}}</p>
+    <br><br><br><br>
+    <p class="indent strong"><em>(назначаемые из числа собственников квартир, нежилого помещения)</em></p>
+    <br>
+
+    <table class="table" cellpadding="1">
+        <thead>
+            <tr>
+                <th style="width: 60pt;">№</th>
+                <th style="width: 200pt;">Вопросы, внесенные для обсуждения:</th>
+                <th style="width: 100pt;">&laquo;За&raquo;</th>
+                <th style="width: 100pt;">&laquo;Против&raquo;</th>
+                <th style="width: 100pt;">&laquo;Воздержусь&raquo;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Questions}}
+            <tr>
+                <td class="checkbox">{{if eq .Decision "За"}}X{{end}}</td>
+                <td>{{.Text}}</td>
+                <td class="checkbox">{{if eq .Decision "Против"}}X{{end}}</td>
+                <td class="checkbox">{{if eq .Decision "Воздержусь"}}X{{end}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <p class="indent">Ф.И.О. собственника квартиры, нежилого помещения <u>{{.OwnerName}}</u></p>
+    <p class="indent"><u> Адрес собственника квартиры, нежилого помещения <u>{{.OwnerAddress}}</u></u></p>
+    <br>
+    <p class="indent">Подпись (собственника квартиры, нежилого помещения)__</p>
+    <p class="indent">Подпись (ответственные лица)__</p>
+    <p class="indent">Подпись (члена совета дома)__</p>
+    <p class="indent">Подпись (члена совета дома)__</p>
+    <p class="indent">Подпись (члена совета дома)__</p>
+</body>
+
+</html>`
+*/
