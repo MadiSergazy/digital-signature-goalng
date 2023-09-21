@@ -83,3 +83,35 @@ func TestGeneratePetitionPDF(t *testing.T) {
 func NewService(mockRepo *mockRepository, mockLogger *zap.Logger) {
 	panic("unimplemented")
 }
+
+/**
+testing json:
+
+{
+    "file_name": "output.pdf",
+    "location": "Apartment Building 123",
+    "responsible_person": "John Doe",
+    "questions": [
+        {
+            "number": 1,
+            "text": "Should we repaint the common areas?",
+            "description": "За"
+        },
+        {
+            "number": 2,
+            "text": "Should we install security cameras?",
+            "description": "Воздержусь"
+        },
+        {
+            "number": 3,
+            "text": "Should we increase the maintenance fee?",
+            "description": "Против"
+        }
+    ],
+    "owner_name": "Alice Smith",
+    "owner_address": "vfv4d6515"
+}
+
+*
+
+*/

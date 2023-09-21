@@ -35,7 +35,7 @@ func NewService(petitionRepository Repository, logger *zap.Logger) Service {
 }
 
 // Todo save to db ?
-func (s *Service) GeneratePetitionPDF(data *PetitionData) (*PetitionData, error) {
+func (s Service) GeneratePetitionPDF(data *PetitionData) (*PetitionData, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
