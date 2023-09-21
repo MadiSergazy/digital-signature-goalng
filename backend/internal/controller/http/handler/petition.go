@@ -75,6 +75,9 @@ func (h petitionHandler) GeneratePetitionPDFHandler(c *gin.Context) {
 		return
 	}
 
+	// Set the Content-Type header to specify UTF-8 encoding
+	c.Header("Content-Type", "application/json; charset=utf-8")
+
 	// Return the generated PDF data in the response
 	c.Header("Content-Type", "application/pdf")
 	c.Header("Content-Disposition", "attachment; filename="+generatedData.FileName)
