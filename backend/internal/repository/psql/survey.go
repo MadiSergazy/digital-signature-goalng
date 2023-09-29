@@ -61,6 +61,7 @@ func (s SurveyrRepository) Create(req *survey.SurveyRequirements, ctx context.Co
 }
 
 func (s SurveyrRepository) GetSurviesByUserID(user_id int, ctx *gin.Context) (response []*survey.SurveyResponse, err error) {
+	fmt.Println("usesr_id:", user_id)
 	query := "SELECT * FROM survey WHERE user_id = $1"
 	rows, err := s.db.Pool.Query(ctx, query, user_id)
 	if err != nil {
@@ -68,10 +69,11 @@ func (s SurveyrRepository) GetSurviesByUserID(user_id int, ctx *gin.Context) (re
 		return nil, err
 	}
 	defer rows.Close()
-	// var surveyResponse *survey.SurveyResponse
+
 	var surveis []*survey.SurveyResponse
-	surveyResponse := new(survey.SurveyResponse)
+
 	for rows.Next() {
+		surveyResponse := new(survey.SurveyResponse) // Create a new instance for each row
 		// Scan the row into variables
 		if err := rows.Scan(&surveyResponse.ID, &surveyResponse.Name, &surveyResponse.Status, &surveyResponse.Rka, &surveyResponse.Rc_name, &surveyResponse.Adress, &surveyResponse.Question_id, &surveyResponse.CreatedAt, &surveyResponse.User_id); err != nil {
 			s.logger.Error("GetSurviesByUserID scanning err: ", zap.Error(err))
@@ -79,6 +81,7 @@ func (s SurveyrRepository) GetSurviesByUserID(user_id int, ctx *gin.Context) (re
 		}
 		surveis = append(surveis, surveyResponse)
 	}
+
 	fmt.Println("surveyResponse:", surveis)
 	return surveis, nil
 }

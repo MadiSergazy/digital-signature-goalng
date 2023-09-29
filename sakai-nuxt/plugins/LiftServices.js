@@ -13,11 +13,13 @@ const LiftService = {
         return response;
     },
     async get_survey() {
-        const url = `${API_URL}/api/survey/get`;
+        const url = `${API_URL}/api/survey/get/1`;
         console.log('URL:', url);
-        const response = await useAsyncData('contirm', async () => await $fetch(url, { method: 'POST', headers: getHeader(), body: { user_id: 1 } }));
-        // const response = await useFetch(url);
-        return response;
+        // const data = await useAsyncData('survey', async () => await $fetch(() => url, { method: 'GET', headers: getHeader() }));
+        const data = await $fetch(url);
+        console.log('GXDZSFGHJ');
+        // const response = await useFetch(`${API_URL}/api/mams`);
+        return data;
     },
     async post_survey(requirements) {
         const url = `${API_URL}/api/survey/create`;

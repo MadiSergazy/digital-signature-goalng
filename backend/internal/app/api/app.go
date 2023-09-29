@@ -44,13 +44,6 @@ func New(ctx context.Context, logger *zap.Logger) (App, error) {
 		return App{}, fmt.Errorf("can not connect to postgres: %w", err)
 	}
 
-	// passwordHasher := hash.NewArgon2Hasher()
-
-	// tokenMaker, err := token.NewJWTMaker(cfg.Token.SecretKey)
-	// if err != nil {
-	// 	return App{}, fmt.Errorf("failed to create token maker: %w", err)
-	// }
-
 	repositories := psql.NewRepositories(postgresInstance, logger)
 	services := core.NewServices(repositories, logger)
 

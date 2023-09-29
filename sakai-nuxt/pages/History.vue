@@ -13,14 +13,26 @@
         <DataTable v-model:editingRows="editingRows" :value="products" v-model:selection="selectedProducts" editMode="row" dataKey="name" @row-edit-save="onRowEditSave" tableClass="editable-cells-table" tableStyle="min-width: 50rem">
             <Column selectionMode="multiple" style="width: 5%" :exportable="false"></Column>
             <Column field="CreatedAt" header="Дата создания" style="width: 20%">
-                <template #editor="{ data, field }">
-                    <InputText v-model="data[field]" />
+                <template #body="{ data }">
+                    {{ formatDate(data['CreatedAt']) }}
                 </template>
             </Column>
             <Column field="Name" header="Имя" style="width: 20%">
                 <template #editor="{ data, field }">
                     <InputText v-model="data[field]" />
                 </template>
+            </Column>
+            <Column field="status" header="Status" :showFilterMenu="false" :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
+                <template #body="{ data }">
+                    <Tag :value="getStatusLabel(data.Status)" :severity="getSeverity(data.Status)" />
+                </template>
+                <!-- <template #filter="{ filterModel, filterCallback }">
+                    <Dropdown v-model="filterModel.value" @change="filterCallback()" :options="statuses" placeholder="Select One" class="p-column-filter" style="min-width: 12rem" :showClear="true">
+                        <template #option="slotProps">
+                            <Tag :value="slotProps.option" :severity="getSeverity(slotProps.option)" />
+                        </template>
+                    </Dropdown>
+                </template> -->
             </Column>
             <Column style="width: 10%; min-width: 8rem" bodyStyle="text-align:center">
                 <template #body="{ data, field }"> <Button icon="pi pi-eye" text rounded aria-label="Filter" @click="viewDetailt(data)" /></template
@@ -47,10 +59,10 @@
             </template>
         </Dialog>
         <Dialog v-model:visible="statisticDialog" :style="{ width: '450px' }" header="Survey Details" :modal="true" class="p-fluid">
-            <p style="font-weight: bold">Survey: {{ selectedProduct.name }}</p>
-            <p style="font-weight: bold">Status: <Tag :value="selectedProduct.inventoryStatus" :severity="getStatusLabel(selectedProduct.inventoryStatus)" /></p>
+            <p style="font-weight: bold">Survey: {{ selectedProduct.Name }}</p>
+            <p style="font-weight: bold">Status: <Tag :value="getStatusLabel(selectedProduct.Status)" :severity="getSeverity(selectedProduct.Status)" /></p>
 
-            <div v-for="question in selectedProduct.questions">
+            <div v-for="question in selectedProduct.Question_id">
                 <p style="font-weight: 400">Вопрос: {{ question.description }}</p>
                 <div class="card flex justify-content-center">
                     <Chart type="pie" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
@@ -65,7 +77,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-// import { useMainStore } from '../service/mainstore';
 definePageMeta({
     layout: false
 });
@@ -88,17 +99,18 @@ const hideDialog = () => {
 const product = {
     name: 'Имя опроса'
 };
+
 const questions = ref([{ description: '' }]);
 const selectedProducts = ref();
 const productDialog = ref(false);
 const products = ref([]);
 const editingRows = ref([]);
 const nuxtApp = useNuxtApp();
-const statuses = ref([
-    { label: 'In Stock', value: 'АКТИВНО' },
-    { label: 'Low Stock', value: 'НЕАКТИВНО' },
-    { label: 'Out of Stock', value: 'OUTOFSTOCK' }
-]);
+// const statuses = ref([
+//     { label: 'In Stock', value: 'АКТИВНО' },
+//     { label: 'Low Stock', value: 'НЕАКТИВНО' },
+//     { label: 'Out of Stock', value: 'OUTOFSTOCK' }
+// ]);
 const addQuestion = () => {
     questions.value.push({ description: '' });
 };
@@ -107,56 +119,60 @@ onMounted(async () => {
     // const store = useMainStore();
     // store.set_iin(localStorage.getItem('iin'));
     // console.log('HERE');
+
     await init();
     // ProductService.getProductsMini().then((data) => (products.value = data));
     // products.value = [{ code: '19-00', name: 'name', inventoryStatus: 'АКТИВНО', questions: [{ description: 'Idk' }] }];
 });
+const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    return `${year}.${month}.${day}`;
+};
 const init = async () => {
     var temp = await nuxtApp.$liftservice().get_survey();
+    // var temp = await get_survey();
     console.log('temp:', temp);
-    products.value = temp.data;
+    products.value = temp;
+    console.log('products.value:', products.value);
 };
 const onRowEditSave = (event) => {
     let { newData, index } = event;
 
     products.value[index] = newData;
 };
-const currentDate = new Date();
 const saveProduct = async () => {
-    // Get the current time components
-    // const day = String(currentDate.getDate()).padStart(2, '0');
-    // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    // const year = currentDate.getFullYear();
-    //     type SurveyRequirements struct {
-    // 	ID         string     `json:"id,omitempty"`
-    // 	UserID     int        `json:"user_id,omitempty"`
-    // 	Name       string     `json:"name"`
-    // 	Rka        string     `json:"rka,omitempty"`
-    // 	RcName     string     `json:"rc_name,omitempty"`
-    // 	Adress     string     `json:"address,omitempty"`
-    // 	Questions  []Question `json:"questions"`
-    // 	CreateDate string     `json:"create_date,omitempty"`
-    // }
-    // const formattedDate = `${day}.${month}.${year}`;
-    // products.value.push({ name: product.name, code: formattedDate, inventoryStatus: 'АКТИВНО', questions: questions.value });
-    const response = await nuxtApp.$liftservice().post_survey({ questions: questions.value, name: product.name, user_id: 1 });
-    console.log('DATA:', response.data);
+    await nuxtApp.$liftservice().post_survey({ questions: questions.value, name: product.name, user_id: 1 });
+    await init();
     hideDialog();
 };
-const getStatusLabel = (status) => {
-    switch (status) {
-        case 'АКТИВНО':
-            return 'success';
-
-        case 'НЕАКТИВНО':
-            return 'warning';
-
-        case 'OUTOFSTOCK':
-            return 'danger';
-
-        default:
-            return null;
+const getSeverity = (status) => {
+    if (status) {
+        return 'success';
     }
+    return 'warning';
+};
+const getStatusLabel = (status) => {
+    // switch (status) {
+    //     case 'АКТИВНО':
+    //         return 'success';
+
+    //     case 'НЕАКТИВНО':
+    //         return 'warning';
+
+    //     case 'OUTOFSTOCK':
+    //         return 'danger';
+
+    //     default:
+    //         return null;
+    // }
+    if (status) {
+        return 'АКТИВНО';
+    }
+    return 'НЕАКТИВНО';
 };
 const chartData = ref();
 const chartOptions = ref({
@@ -184,6 +200,7 @@ const setChartData = () => {
     };
 };
 const viewDetailt = (data) => {
+    console.log('data:', data);
     selectedProduct.value = data;
     // console.log(data);
     statisticDialog.value = true;

@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
+
 	// "strconv"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +38,7 @@ func newSurveyHandler(deps surveyDeps) {
 	usersGroup := deps.router.Group("/survey")
 	{
 		usersGroup.POST("/create", handler.CreateSurvey)
-		usersGroup.POST("/get", handler.GetSurveis)
+		usersGroup.GET("/get/:id", handler.GetSurveis)
 	}
 
 }
@@ -67,12 +70,12 @@ func (h surveyHandler) CreateSurvey(c *gin.Context) {
 }
 
 func (h surveyHandler) GetSurveis(c *gin.Context) {
-	var request UserReq
-	// userID, err := strconv.Atoi(c.Param("user_id"))
-	if err := c.BindJSON(&request); err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
 	}
-	respnose, err := h.surveyService.GetSurviesByUserID(request.UserID, c)
+	fmt.Println("userID:", userID)
+	respnose, err := h.surveyService.GetSurviesByUserID(userID, c)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
